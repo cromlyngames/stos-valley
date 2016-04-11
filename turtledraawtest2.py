@@ -1,5 +1,6 @@
 import turtle
 import random
+from tkinter import *
    
 testingmon = [0,
     0.4,                         #crownD,
@@ -14,7 +15,7 @@ testingmon = [0,
 mirror=1       #used to reflect the turtle
 scale =100  #used to scale the size of the monster
 looper=1    #if 0 then program will complete
-
+population =1 #looper counting number of good monsters the program will make at a time
 
 
 def randommonMaker():
@@ -115,19 +116,34 @@ def drawmonster(mirror, scale, generikmon):
         badnesscount=badnesscount+5
     return(badnesscount)
 
-while (looper>0):
-    mirror=1
-    turtle.clear()
-    turtle.home()
-    turtle.setheading(90)
-    randommon =randommonMaker()
-    turtle.hideturtle()
-    turtle.speed(0)
-    looper=drawmonster(mirror, scale, randommon)
-    print(looper)
-    turtle.penup()
-    turtle.home()
-    turtle.pendown()
-    turtle.setheading(90)
-    mirror=-1
-    drawmonster(mirror, scale, randommon)
+##########################################
+while (population <10):
+    print(population)
+    looper=1
+    while (looper>0):    #will keep drawing monsters until a good drawing achieved
+        mirror=1
+        turtle.home()
+        turtle.clear()
+        turtle.setheading(90) #sets drawing canvas up
+        turtle.hideturtle()
+        turtle.speed(0)
+        randommon =randommonMaker()
+        looper=drawmonster(mirror, scale, randommon) #if badness occurs, looper=/= 0
+        #print(looper)
+        turtle.penup()
+        turtle.home()
+        turtle.pendown()
+        turtle.setheading(90)
+        mirror=-1
+        drawmonster(mirror, scale, randommon)  #draws second half of monster
+
+    print("made")
+    ts = turtle.getscreen()
+    filenamer = str(population)  #turns population iteration into a string for filenameig
+    filenamer = filenamer+".eps"
+    print("filename =")
+    ts.getcanvas().postscript(file=filenamer)
+    print (filenamer)
+    population=population+1
+    print("pop= ", population)
+        
