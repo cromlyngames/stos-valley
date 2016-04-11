@@ -9,10 +9,13 @@ draws random monster.
 
 Done:
 basic monster drawing
+
 Done:
 basic random monster maker
+
 Done:
 Culler on the monster maker that reports any bad designs
+
 Done:
 export looper to allow ten (or more) examples to be drawn in one operation
 
