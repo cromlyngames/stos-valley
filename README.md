@@ -19,11 +19,14 @@ Culler on the monster maker that reports any bad designs
 Done:
 export looper to allow ten (or more) examples to be drawn in one operation
 
-
+Done:
+Detail eye, mouth
 
 TODO:
 
-Detail drawing: eyes, mouth, fangs, horns, claws, stripes
+Detail drawing: fangs, horns, claws, stripes
+
+Detail culler
 
 powers drawing: fire, ice, elec, light, dark, poison
 
