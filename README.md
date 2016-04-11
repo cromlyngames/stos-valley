@@ -4,7 +4,7 @@ evo fun by Cromlyn Games
 based off the Stos Valley work here: https://www.reddit.com/r/StosValley/comments/39p172/stos_valley_the_game/
 
 Currently:
-draws random monster.
+draws random monster, checks if it is a good drawing, repeates until it is. repeats this ten tim3es, outputting image files for each.
 
 
 Done:
