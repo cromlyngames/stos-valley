@@ -25,7 +25,7 @@ testingmon ={ 'detail0':testingdetail,
 
 def randommonMaker():
     randomdetail = { 'expansionslot': 0,
-                      'eyeratio': random.random(),   'frownA': random.randint(10, 70),     'eyesize': random.random()*1.5,
+                      'eyeratio': random.random(),   'frownA': random.randint(10, 70),     'eyesize': random.random(),
                       'nosesize': random.random(),   'mouthsize': random.random()*0.6,  
                     }
 
@@ -128,7 +128,31 @@ def drawmonsterdetails(mirror, scale, generikmon):
       #for i in range(25):
        # print(generikmon[i], i)
     badnesscount=0
-    ### draw the eyes
+
+    ### draw the ears
+    turtle.penup()
+    turtle.home()
+    turtle.setheading(90)
+    turtle.right(mirror*90)                 #requires turtle to be facing upwards       
+    turtle.forward(scale*generikmon['crownD'])  #crownD follow crown line exactly
+    turtle.left(mirror*generikmon['ear1A'])     #ear1A
+    turtle.right(mirror*90)     #turns back into shape.
+    turtle.forward(scale*(generikmon['ear2D']*0.1+0.01))
+    startoftheear = turtle.pos()
+    turtle.pendown()
+        # start actually drawing
+    turtle.setheading(90)
+    turtle.right(mirror*90)
+    turtle.left(mirror*generikmon['ear1A'])     #ear1A
+    turtle.forward(scale*generikmon['ear2D']*0.8)  #ear2D
+    turtle.right(mirror*generikmon['ear3A'])    #ear3A
+    turtle.forward(scale*generikmon['ear2D']*0.8)  #ear2D
+    turtle.right(mirror*generikmon['ear4A'])    #ear4A
+    turtle.forward(scale*generikmon['ear6D']*0.7)  #ear6D
+    turtle.right(mirror*generikmon['ear5A'])    #ear5A
+    turtle.forward(scale*generikmon['ear6D']*0.7)  #ear5D
+    turtle.goto(startoftheear)                      #finishs the ear off.
+    ### draw the eyes (stamped over ears if needed)
     turtle.penup()
     turtle.home()
    # print(turtle.xcor(),turtle.ycor())
@@ -165,7 +189,7 @@ def drawmonsterdetails(mirror, scale, generikmon):
 
 
 ##########################################
-while (population < 10):
+while (population < 2):
    # print(population)
     looper=1
     while (looper>0):    #will keep drawing monsters until a good drawing achieved
