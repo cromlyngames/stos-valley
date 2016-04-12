@@ -23,31 +23,26 @@ testingmon ={ 'detail0':testingdetail,
 
 
 
-
-
-
-
 def randommonMaker():
     randomdetail = { 'expansionslot': 0,
                       'eyeratio': random.random(),   'frownA': random.randint(10, 70),     'eyesize': random.random()*1.5,
                       'nosesize': random.random(),   'mouthsize': random.random()*0.6,  
                     }
 
-randommon ={ 'detail0':randomdetail,
-              'crownD':random.random()*0.4,
-              random.randint(45, 135),       'ear2D':random.random()*0.15,   'ear3A':random.randint(15, 75),       
-              'ear4A':random.randint(45, 135), 'ear5A':random.randint(15, 75), 'ear6D':random.random()*0.1,   #ear1A,ear2D,ear3A,ear4A,ear5A,ear5D,
-              'cheekD':random.random()*0.2,     'jawlineA':random.randint(10, 90),  'shoulderD':random.random()*0.17,               #cheekD,jawlineA,shoulderD,
-              'shoulderA':random.randint(30, 90),   'thighD':random.random()*0.3,   'elbowA':random.randint(5, 20),      'shinD':random.random()*0.3,            #shoulderA, thighD, elbowA, shinD
-              'NumofToes':random.randint(1, 5),    'frontbackratio':random.random()*0.75, 'toelengthD':random.random()*0.12,               #NumOfToes, frontbackratio, toelengthD, 
-              'tailbodyratio':random.random()*0.1, 'tailspineD':random.random()*0.5, 'tailtipA':random.randint(1, 89), 'tailtipD': random.random()*0.1            #tailbodywidthratio, tailspineD, tailtipA, tailtipD
-              }
-
-
+    randommon = { 'detail0':randomdetail,
+                  'crownD':random.random()*0.8,
+                  'ear1A': random.randint(45, 135),     'ear2D':random.random()*0.3,        'ear3A':random.randint(15, 75),       
+                  'ear4A':random.randint(45, 135),      'ear5A':random.randint(15, 75),     'ear6D':random.random()*0.2,   #ear1A,ear2D,ear3A,ear4A,ear5A,ear5D,
+                  'cheekD':random.random()*0.4,         'jawlineA':random.randint(10, 90),  'shoulderD':random.random()*0.34,               #cheekD,jawlineA,shoulderD,
+                  'shoulderA':random.randint(30, 90),   'thighD':random.random()*0.6,       'elbowA':random.randint(5, 20),      'shinD':random.random()*0.6,            #shoulderA, thighD, elbowA, shinD
+                  'NumofToes':random.randint(1, 5),     'frontbackratio':random.random()*0.75, 'toelengthD':random.random()*0.24,               #NumOfToes, frontbackratio, toelengthD, 
+                  'tailbodyratio':random.random()*0.2,  'tailspineD':random.random()*1.0,   'tailtipA':random.randint(1, 89), 'tailtipD': random.random()*0.2            #tailbodywidthratio, tailspineD, tailtipA, tailtipD
+                  }
+    return(randommon)
 
 def drawmonster(mirror, scale, generikmon):
-  #  for i in range(25):
-   #       print(generikmon[i], i)
+    #for i in range(25):
+    #      print(generikmon[i], i)
     badnesscount=0
     turtle.right(mirror*90)                 #requires turtle to be facing upwards       
     turtle.forward(scale*generikmon['crownD'])  #crownD
@@ -133,7 +128,6 @@ def drawmonsterdetails(mirror, scale, generikmon):
       #for i in range(25):
        # print(generikmon[i], i)
     badnesscount=0
-
     ### draw the eyes
     turtle.penup()
     turtle.home()
@@ -183,9 +177,11 @@ while (population < 10):
         turtle.hideturtle()
         turtle.speed(10)
         turtle.pendown()
+        
         randommon =randommonMaker()
+       # looper=drawmonster(mirror, scale, testingmon)
         looper=drawmonster(mirror, scale, randommon) #if badness occurs, looper=/= 0
-        #looper=drawmonster(mirror, scale, testingmon)
+        
         #print(looper)
         turtle.penup()
         turtle.home()
@@ -208,6 +204,3 @@ while (population < 10):
  #   print (filenamer)
     population=population+1
     print("pop= ", population)
-
-    
-        
