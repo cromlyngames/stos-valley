@@ -17,7 +17,7 @@ testingmon ={ 'detail0':testingdetail,
               'ear1A':90,       'ear2D':0.15,   'ear3A':45,       'ear4A':90, 'ear5A':45, 'ear6D':0.1,   #ear1A,ear2D,ear3A,ear4A,ear5A,ear5D,
               'cheekD':0.2,     'jawlineA':60,  'shoulderD':0.17,               #cheekD,jawlineA,shoulderD,
               'shoulderA':60,   'thighD':0.3,   'elbowA':10,      'shinD':0.3,            #shoulderA, thighD, elbowA, shinD
-              'NumofToes':3,    'frontbackratio':0.75, 'toelengthD':0.12,               #NumOfToes, frontbackratio, toelengthD, 
+              'numofToes':3,    'frontbackratio':0.75, 'toelengthD':0.12,               #numofToes, frontbackratio, toelengthD, 
               'tailbodyratio':0.1, 'tailspineD':0.5, 'tailtipA':80, 'tailtipD': 0.1           #tailbodywidthratio, tailspineD, tailtipA, tailtipD
               }
 
@@ -26,7 +26,9 @@ testingmon ={ 'detail0':testingdetail,
 def randommonMaker():
     randomdetail = { 'expansionslot': 0,
                       'eyeratio': random.random(),   'frownA': random.randint(10, 70),     'eyesize': random.random(),
-                      'nosesize': random.random(),   'mouthsize': random.random()*0.6,  
+                      'nosesize': random.random(),   'mouthsize': random.random()*0.6,
+                      'numofTeeth': random.randint(1, 5), 'fanglength':random.random(), 'fangtipratio':random.random(),
+                      'clawlength':random.random()*0.2
                     }
 
     randommon = { 'detail0':randomdetail,
@@ -35,7 +37,7 @@ def randommonMaker():
                   'ear4A':random.randint(45, 135),      'ear5A':random.randint(15, 75),     'ear6D':random.random()*0.2,   #ear1A,ear2D,ear3A,ear4A,ear5A,ear5D,
                   'cheekD':random.random()*0.4,         'jawlineA':random.randint(10, 90),  'shoulderD':random.random()*0.34,               #cheekD,jawlineA,shoulderD,
                   'shoulderA':random.randint(30, 90),   'thighD':random.random()*0.6,       'elbowA':random.randint(5, 20),      'shinD':random.random()*0.6,            #shoulderA, thighD, elbowA, shinD
-                  'NumofToes':random.randint(1, 5),     'frontbackratio':random.random()*0.75, 'toelengthD':random.random()*0.24,               #NumOfToes, frontbackratio, toelengthD, 
+                  'numofToes':random.randint(1, 5),     'frontbackratio':random.random()*0.75, 'toelengthD':random.random()*0.24,               #numofToes, frontbackratio, toelengthD, 
                   'tailbodyratio':random.random()*0.2,  'tailspineD':random.random()*1.0,   'tailtipA':random.randint(1, 89), 'tailtipD': random.random()*0.2            #tailbodywidthratio, tailspineD, tailtipA, tailtipD
                   }
     return(randommon)
@@ -80,16 +82,16 @@ def drawmonster(mirror, scale, generikmon):
     turtle.left(mirror*generikmon['elbowA'])    #elbowA
     turtle.forward(scale*generikmon['shinD'])#shinD
     # into the toes!
-    NumofToes = generikmon['NumofToes']
+    numofToes = generikmon['numofToes']
     fullwidth= turtle.xcor()
     tailwidth= fullwidth*generikmon['tailbodyratio'] #talibodywidthratio,
     pawswidth= fullwidth-tailwidth
     frontpawwidth=pawswidth*generikmon['frontbackratio'] #fronttobackratio
-    toewidth=frontpawwidth/(NumofToes)
+    toewidth=frontpawwidth/(numofToes)
     if turtle.ycor()>0:
         badnesscount=badnesscount+2
         return(badnesscount)
-    for i in range(NumofToes):
+    for i in range(numofToes):
         turtle.setheading(270)
         turtle.forward(scale*generikmon['toelengthD'])#toelengthD
         turtle.right(mirror*90)
@@ -97,8 +99,8 @@ def drawmonster(mirror, scale, generikmon):
         turtle.right(mirror*90)
         turtle.forward(scale*generikmon['toelengthD']) #toelegnth - going back up               
       #into the rear toes. # all lengths scaled by generikmon[16] = frontotbackratio
-    toewidth=(pawswidth-frontpawwidth)/NumofToes  #redefines toe width for backpaws.
-    for i in range(NumofToes):
+    toewidth=(pawswidth-frontpawwidth)/numofToes  #redefines toe width for backpaws.
+    for i in range(numofToes):
         turtle.setheading(270)
         turtle.forward(scale*generikmon['frontbackratio']*generikmon['toelengthD'])#toelengthD
         turtle.right(mirror*90)
@@ -186,10 +188,27 @@ def drawmonsterdetails(mirror, scale, generikmon):
     turtle.home()
     return()
 
-
+def evalmonster(generikmon):
+    detailsbit = generikmon['detail0']
+    senseEval = 1/4*(detailsbit['eyesize'] +detailsbit['nosesize'] + generikmon['ear2D'] + generikmon['ear6D'])
+    hidingEval = 1- 1/5*(generikmon['crownD']+generikmon['cheekD']+generikmon['shoulderD']+generikmon['thighD']+generikmon['shinD'])
+    strengthEval = 1/3*(generikmon['shoulderD']+generikmon['frontbackratio'] + (1- generikmon['tailbodyratio']))
+    speedFOREST = 1/5*(detailsbit['clawlength'] +generikmon['tailspineD'] + generikmon['toelengthD']+generikmon['thighD']+generikmon['shinD'])
+    sprinterelbow = 1- ((90-generikmon['elbowA'])/100)**2  #should be larger as the elbow gets straighter - ie ostrich not lizard
+    speedMEADOW = 1/4*(generikmon['shinD']+generikmon['thighD']+1/generikmon['numofToes']+sprinterelbow)
+    speedSWAMP = 1/3*(generikmon['tailtipD']+(1-generikmon['frontbackratio'])+generikmon['tailbodyratio'])
+    preybonus = 1/3*(detailsbit['eyeratio']+generikmon['crownD']+detailsbit['fangtipratio'])
+    predbonus = 1/3*(detailsbit['clawlength']+detailsbit['fanglength']+(1-detailsbit['fangtipratio']))
+    metabolisim = 1-1/(detailsbit['eyesize']+detailsbit['nosesize']+detailsbit['clawlength']+detailsbit['fanglength']
+                      +generikmon['crownD']+generikmon['ear2D']+generikmon['ear6D']+generikmon['cheekD']
+                      +generikmon['shoulderD']+generikmon['thighD']+generikmon['shinD']++generikmon['toelengthD']
+                      ++generikmon['tailspineD']+generikmon['tailtipD'])
+    print(senseEval, hidingEval, strengthEval, speedFOREST, speedMEADOW, speedSWAMP, preybonus, predbonus, metabolisim)
+    return()                 
 
 ##########################################
-while (population < 2):
+populationtotal = int(input("how many monsters?: "))
+while (population < populationtotal):
    # print(population)
     looper=1
     while (looper>0):    #will keep drawing monsters until a good drawing achieved
@@ -213,6 +232,8 @@ while (population < 2):
         turtle.setheading(90)
         mirror=-1
         drawmonster(mirror, scale, randommon)  #draws second half of monster
+        evalmonster(randommon)
+
 
    # print("made")
     ts = turtle.getscreen()
