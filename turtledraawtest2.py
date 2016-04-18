@@ -156,8 +156,6 @@ def drawhalfmonster(mirror, scale, generikmon):
     #line between front and back
     turtle.left(mirror*generikmon['elbowA'])
     turtle.forward(0.5*scale*generikmon['shinD'])
-    turtle.forward(0.5*scale*generikmon['thighD'])
-    turtle.forward(-0.5*scale*generikmon['thighD']) # now reverse back along that line
     turtle.left(mirror*-0.5*generikmon['elbowA'])
     turtle.forward(-0.5*scale*generikmon['shinD'])
     #rearpaw
@@ -225,7 +223,7 @@ def drawmonsterdetails(mirror, scale, generikmon,startoftoes):
         xclawtip = xclawstart - toewidth*0.4
         xclawend = xclawtip - toewidth*0.4
         yclawstart = turtle.ycor()
-        yclawtip = yclawstart-scale*detailsbit['clawlength']
+        yclawtip = yclawstart-scale*detailsbit['clawlength']*generikmon['frontbackratio']
         yclawend = yclawstart
         #draw claw (it's already at the start)
         turtle.goto(xclawtip, yclawtip)
@@ -296,7 +294,7 @@ def evalmonster(generikmon):
     detailsbit = generikmon['detail0']
     senseEval = 1/4*(detailsbit['eyesize'] +detailsbit['nosesize'] + generikmon['ear2D'] + generikmon['ear6D'])
     hidingEval = 1- 1/5*(generikmon['crownD']+generikmon['cheekD']+generikmon['shoulderD']+generikmon['thighD']+generikmon['shinD'])
-    strengthEval = 1/3*(generikmon['shoulderD']+generikmon['frontbackratio'] + (1- generikmon['tailbodyratio']))
+    strengthEval = 1/3*(generikmon['shoulderD']+(1-generikmon['frontbackratio']) + (generikmon['tailbodyratio']))
     speedFOREST = 1/5*(detailsbit['clawlength'] +generikmon['tailspineD'] + generikmon['toelengthD']+generikmon['thighD']+generikmon['shinD'])
     sprinterelbow = 1- ((90-generikmon['elbowA'])/100)**2  #should be larger as the elbow gets straighter - ie ostrich not lizard
     speedMEADOW = 1/4*(generikmon['shinD']+generikmon['thighD']+1/generikmon['numofToes']+sprinterelbow)
@@ -307,7 +305,7 @@ def evalmonster(generikmon):
                       +generikmon['crownD']+generikmon['ear2D']+generikmon['ear6D']+generikmon['cheekD']
                       +generikmon['shoulderD']+generikmon['thighD']+generikmon['shinD']+generikmon['toelengthD']
                       +generikmon['tailspineD']+generikmon['tailtipD'])
-    evalresults = { 'senseEval': senseEval, 'hidingEval': hidingEval, 'stregnthEval': strengthEval,
+    evalresults = { 'senseEval': senseEval, 'hidingEval': hidingEval, 'strengthEval': strengthEval,
                     'speedFOREST':speedFOREST, 'speedMEADOW':speedMEADOW, 'speedSWAMP':speedSWAMP,
                     'preybonus':preybonus, 'predbonus':predbonus, 'metabolisim':metabolisim}
     #print(evalresults)
@@ -317,7 +315,7 @@ def evalmonster(generikmon):
 ##########################################
 populationtotal = int(input("how many monsters?: "))
 generationtotal = int(input("how many generations?: "))
-focus = str(input("senseEval, hidingEval, strengthEval, speedFOREST, speedMEADOW, speedSWAMP, preybonus, predbonus, metabolisim ?'"))
+focus = str(input("elvolve towards? (type name) senseEval, hidingEval, strengthEval, speedFOREST, speedMEADOW, speedSWAMP, preybonus, predbonus, metabolisim ?'"))
 populationtotal = populationtotal+1  #needed to make the loop work properly. poptotal = 2 gives one monster
 while (population < populationtotal):
    # print(population)
@@ -327,6 +325,7 @@ while (population < populationtotal):
             randommon =randommonMaker()
             badness=drawmonster(scale, randommon)   # draws inital monster
 
+        print(randommon)
         
         generation = 0 #resets generation loop counter
         while (generation < generationtotal):
@@ -342,9 +341,12 @@ while (population < populationtotal):
             if parentresults[focus]>childresults[focus]:
                 childmon = mutatemonster(scale, randommon)
             else:
+                result=100.0*childresults[focus]/parentresults[focus]
+                print('the species develops!', result,'%')
                 childmon = mutatemonster(scale, childmon) #generates new monster from whichever one is 'fitter'
                 
             generation=generation+1
+            print("gen= ", generation)
         print(childmon)
         population=population+1    
         print("pop= ", population)
