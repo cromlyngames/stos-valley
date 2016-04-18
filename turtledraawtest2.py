@@ -42,7 +42,61 @@ def randommonMaker():
                   }
     return(randommon)
 
-def drawmonster(mirror, scale, generikmon):
+
+####
+def mutatemonster(scale, parentmon):
+    badness =2
+    while badness>1:
+        childmon=parentmon
+        childdetails = childmon['detail0']
+        for ikey,ival in childdetails.items():
+            childdetails[ikey] =childdetails[ikey]*(1+(random.random()+random.random()+random.random()-1.5))
+            
+        childdetails['numofTeeth']=int(childdetails['numofTeeth'])  #need a integer number of teeth!
+        if childdetails['numofTeeth'] < 0:
+            childdetails['numofTeeth']=childdetails['numofTeeth']+1
+        for ikey,ival in childmon.items():
+            if ikey =='detail0': pass #do nothing
+            else:
+                childmon[ikey] = childmon[ikey]*(1+(random.random()+random.random()+random.random()-1.5))
+        childmon['numofToes']=int(childmon['numofToes']) #need a integer number of toes!
+        if childmon['numofToes'] == 0:
+            childmon['numofToes']=childmon['numofToes']+1
+        print('Drawing possible child')
+        badness =drawmonster(scale, childmon)  # uses the drawing test to see if new monster good, if not repeats the mutation.
+        print ('badness =', badness)
+    print('child accepted')
+    return(childmon)
+
+def drawmonster(scale,generikmon):
+    print('drawing...')
+    looper=1
+    mirror=1
+    turtle.penup()
+    turtle.home()
+    turtle.clear()
+    turtle.setheading(90) #sets drawing canvas up
+    turtle.hideturtle()
+    turtle.speed(10)
+    turtle.pendown()
+            
+    # looper=drawmonster(mirror, scale, testingmon)
+
+    looper=drawhalfmonster(mirror, scale, randommon) #if badness occurs, looper=/= 0
+    if looper==0:
+        turtle.penup()
+        turtle.home()
+        turtle.pendown()
+        turtle.setheading(90)
+        mirror=-1
+        drawhalfmonster(mirror, scale, randommon)  #draws second half of monster
+    return(looper)
+    
+       
+
+    
+####
+def drawhalfmonster(mirror, scale, generikmon):
     #for i in range(25):
     #      print(generikmon[i], i)
     badnesscount=0
@@ -63,7 +117,7 @@ def drawmonster(mirror, scale, generikmon):
         badnesscount=badnesscount+1
         return(badnesscount)
     if turtle.ycor()>0:
-        badnesscount=badnesscount+2
+        badnesscount=badnesscount+1
         return(badnesscount)
     #along the jaw and then the shoulder
     turtle.left(mirror*generikmon['jawlineA'])     #jawlineA
@@ -71,10 +125,10 @@ def drawmonster(mirror, scale, generikmon):
     turtle.right(mirror*(180-generikmon['jawlineA']))
     turtle.forward(scale*generikmon['shoulderD']*2)
     if turtle.xcor()*mirror<0:
-        badnesscount=badnesscount+3
+        badnesscount=badnesscount+1
         return(badnesscount)
     if turtle.ycor()>0:
-        badnesscount=badnesscount+2
+        badnesscount=badnesscount+1
         return(badnesscount)
     #down the arm
     turtle.left(mirror*generikmon['shoulderA'])    #shoulderA
@@ -89,7 +143,7 @@ def drawmonster(mirror, scale, generikmon):
     frontpawwidth=pawswidth*generikmon['frontbackratio'] #fronttobackratio
     toewidth=frontpawwidth/(numofToes)
     if turtle.ycor()>0:
-        badnesscount=badnesscount+2
+        badnesscount=badnesscount+1
         return(badnesscount)
     for i in range(numofToes):
         turtle.setheading(270)
@@ -108,7 +162,7 @@ def drawmonster(mirror, scale, generikmon):
         turtle.right(mirror*90)
         turtle.forward(scale*generikmon['frontbackratio']*generikmon['toelengthD']) #toelegnth - going back up   
     if turtle.xcor()*mirror<0:
-        badnesscount=badnesscount+4
+        badnesscount=badnesscount+1
         return(badnesscount)
     # and the tail
     turtle.setheading(270)
@@ -129,7 +183,7 @@ def drawmonsterdetails(mirror, scale, generikmon):
     detailsbit = generikmon['detail0']
       #for i in range(25):
        # print(generikmon[i], i)
-    badnesscount=0
+    #badnesscount=0
 
     ### draw the ears
     turtle.penup()
@@ -201,52 +255,45 @@ def evalmonster(generikmon):
     predbonus = 1/3*(detailsbit['clawlength']+detailsbit['fanglength']+(1-detailsbit['fangtipratio']))
     metabolisim = 1-1/(detailsbit['eyesize']+detailsbit['nosesize']+detailsbit['clawlength']+detailsbit['fanglength']
                       +generikmon['crownD']+generikmon['ear2D']+generikmon['ear6D']+generikmon['cheekD']
-                      +generikmon['shoulderD']+generikmon['thighD']+generikmon['shinD']++generikmon['toelengthD']
-                      ++generikmon['tailspineD']+generikmon['tailtipD'])
-    print(senseEval, hidingEval, strengthEval, speedFOREST, speedMEADOW, speedSWAMP, preybonus, predbonus, metabolisim)
-    return()                 
+                      +generikmon['shoulderD']+generikmon['thighD']+generikmon['shinD']+generikmon['toelengthD']
+                      +generikmon['tailspineD']+generikmon['tailtipD'])
+    evalresults = { 'senseEval': senseEval, 'hidingEval': hidingEval, 'stregnthEval': strengthEval,
+                    'speedFOREST':speedFOREST, 'speedMEADOW':speedMEADOW, 'speedSWAMP':speedSWAMP,
+                    'preybonus':preybonus, 'predbonus':predbonus, 'metabolisim':metabolisim}
+    #print(evalresults)
+                    
+    return(evalresults)                 
 
 ##########################################
 populationtotal = int(input("how many monsters?: "))
+generationtotal = int(input("how many generations?: "))
 populationtotal = populationtotal+1  #needed to make the loop work properly. poptotal = 2 gives one monster
 while (population < populationtotal):
    # print(population)
-    looper=1
-    while (looper>0):    #will keep drawing monsters until a good drawing achieved
-        mirror=1
-        turtle.penup()
-        turtle.home()
-        turtle.clear()
-        turtle.setheading(90) #sets drawing canvas up
-        turtle.hideturtle()
-        turtle.speed(10)
-        turtle.pendown()
-        
-        randommon =randommonMaker()
-       # looper=drawmonster(mirror, scale, testingmon)
-        looper=drawmonster(mirror, scale, randommon) #if badness occurs, looper=/= 0
-        
-        #print(looper)
-        turtle.penup()
-        turtle.home()
-        turtle.pendown()
-        turtle.setheading(90)
-        mirror=-1
-        drawmonster(mirror, scale, randommon)  #draws second half of monster
-        evalmonster(randommon)
+        badness=1
 
+        while badness>0:
+            randommon =randommonMaker()
+            badness=drawmonster(scale, randommon)   # draws inital monster
 
-   # print("made")
-    ts = turtle.getscreen()
-    filenamer = str(population)  #turns population iteration into a string for filenameig
-    filenamerEPS = filenamer+".eps"
-    #print("filename =")
-    ps=ts.getcanvas().postscript(file=filenamerEPS)
-   # im=Image.open(io.BytesIO(ps.encode('utf-8')))
-  #  im=im.resize((2560.1600), Image.ANTIALIAS)
-   # quality_val=95
-  #  sharp = ImageEnhance.Sharpness(im)
-  #  sharp.enhance(2.0).save(filenamer+ ".png", 'PNG')
- #   print (filenamer)
-    population=population+1
-    print("pop= ", population)
+        
+        generation = 0 #resets generation loop counter
+        while (generation < generationtotal):
+            childmon = mutatemonster(scale, randommon)  # creates new child of that monster
+
+            ts = turtle.getscreen()
+            filenamer = str(population)+'_'+str(generation)  #turns population iteration into a string for filenameig
+            filenamerEPS = filenamer+".eps"
+            ps=ts.getcanvas().postscript(file=filenamerEPS)
+            
+            parentresults = evalmonster(randommon)
+            childresults = evalmonster(childmon)
+            if parentresults['predbonus']>childresults['predbonus']:
+                childmon = mutatemonster(scale, randommon)
+            else:
+                childmon = mutatemonster(scale, childmon) #generates new monster from whichever one is 'fitter'
+                
+            generation=generation+1
+        population=population+1    
+        print("pop= ", population)
+    
