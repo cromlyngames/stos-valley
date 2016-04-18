@@ -46,11 +46,11 @@ def randommonMaker():
 ####
 def mutatemonster(scale, parentmon):
     badness =2
-    while badness>1:
+    while badness>0:
         childmon=parentmon
         childdetails = childmon['detail0']
         for ikey,ival in childdetails.items():
-            childdetails[ikey] =childdetails[ikey]*(1+(random.random()+random.random()+random.random()-1.5))
+            childdetails[ikey] =childdetails[ikey]*(1+(random.random()+random.random()+random.random()-1.5)/10)
             
         childdetails['numofTeeth']=int(childdetails['numofTeeth'])  #need a integer number of teeth!
         if childdetails['numofTeeth'] < 0:
@@ -58,7 +58,7 @@ def mutatemonster(scale, parentmon):
         for ikey,ival in childmon.items():
             if ikey =='detail0': pass #do nothing
             else:
-                childmon[ikey] = childmon[ikey]*(1+(random.random()+random.random()+random.random()-1.5))
+                childmon[ikey] = childmon[ikey]*(1+(random.random()+random.random()+random.random()-1.5)/10)
         childmon['numofToes']=int(childmon['numofToes']) #need a integer number of toes!
         if childmon['numofToes'] == 0:
             childmon['numofToes']=childmon['numofToes']+1
@@ -136,34 +136,38 @@ def drawhalfmonster(mirror, scale, generikmon):
     turtle.left(mirror*generikmon['elbowA'])    #elbowA
     turtle.forward(scale*generikmon['shinD'])#shinD
     # into the toes!
-    numofToes = generikmon['numofToes']
+    startoftoes=turtle.pos()
+    turtle.setheading(270)
+    turtle.forward(scale*generikmon['toelengthD'])#toelengthD
+    if turtle.xcor()*mirror<0:
+        badnesscount=badnesscount+1
+        return(badnesscount)
+    #front paw
     fullwidth= turtle.xcor()
     tailwidth= fullwidth*generikmon['tailbodyratio'] #talibodywidthratio,
     pawswidth= fullwidth-tailwidth
     frontpawwidth=pawswidth*generikmon['frontbackratio'] #fronttobackratio
-    toewidth=frontpawwidth/(numofToes)
-    if turtle.ycor()>0:
-        badnesscount=badnesscount+1
-        return(badnesscount)
-    for i in range(numofToes):
-        turtle.setheading(270)
-        turtle.forward(scale*generikmon['toelengthD'])#toelengthD
-        turtle.right(mirror*90)
-        turtle.forward(mirror*toewidth)  #mirror required here since xcord is negative on second hlaf
-        turtle.right(mirror*90)
-        turtle.forward(scale*generikmon['toelengthD']) #toelegnth - going back up               
-      #into the rear toes. # all lengths scaled by generikmon[16] = frontotbackratio
-    toewidth=(pawswidth-frontpawwidth)/numofToes  #redefines toe width for backpaws.
-    for i in range(numofToes):
-        turtle.setheading(270)
-        turtle.forward(scale*generikmon['frontbackratio']*generikmon['toelengthD'])#toelengthD
-        turtle.right(mirror*90)
-        turtle.forward(mirror*toewidth)
-        turtle.right(mirror*90)
-        turtle.forward(scale*generikmon['frontbackratio']*generikmon['toelengthD']) #toelegnth - going back up   
-    if turtle.xcor()*mirror<0:
-        badnesscount=badnesscount+1
-        return(badnesscount)
+    backpawwidth=pawswidth-frontpawwidth
+    
+    turtle.right(mirror*90)
+    turtle.forward(mirror*frontpawwidth) #draws front foot 'block'
+    turtle.setheading(90)
+    turtle.forward(scale*generikmon['toelengthD'])#toelengthD
+    #line between front and back
+    turtle.left(mirror*generikmon['elbowA'])
+    turtle.forward(0.5*scale*generikmon['shinD'])
+    turtle.forward(0.5*scale*generikmon['thighD'])
+    turtle.forward(-0.5*scale*generikmon['thighD']) # now reverse back along that line
+    turtle.left(mirror*-0.5*generikmon['elbowA'])
+    turtle.forward(-0.5*scale*generikmon['shinD'])
+    #rearpaw
+    turtle.setheading(270)
+    turtle.forward(scale*generikmon['frontbackratio']*generikmon['toelengthD'])#toelengthD
+    turtle.right(mirror*90)
+    turtle.forward(mirror*backpawwidth)
+    turtle.right(mirror*90)
+    turtle.forward(scale*generikmon['frontbackratio']*generikmon['toelengthD'])
+    
     # and the tail
     turtle.setheading(270)
     turtle.forward(scale*generikmon['tailspineD']) #talespine
@@ -175,15 +179,61 @@ def drawhalfmonster(mirror, scale, generikmon):
     turtle.forward(scale*generikmon['tailtipD'])
     turtle.left(mirror*(generikmon['tailtipA'])-90)
     turtle.forward(tailwidth)
-    drawmonsterdetails(mirror,scale,randommon) #ADD the details
+    drawmonsterdetails(mirror,scale,randommon, startoftoes) #ADD the details
    # looper=drawmonsterdetails(mirror,scale,testingmon) #ADD the details
     return(badnesscount)
     
-def drawmonsterdetails(mirror, scale, generikmon):
+def drawmonsterdetails(mirror, scale, generikmon,startoftoes):
     detailsbit = generikmon['detail0']
-      #for i in range(25):
-       # print(generikmon[i], i)
-    #badnesscount=0
+    turtle.penup()
+    turtle.goto(startoftoes)
+    turtle.pendown()
+    ### draw the toes webs and claws    
+    numofToes = generikmon['numofToes']
+    fullwidth= turtle.xcor()
+    tailwidth= fullwidth*generikmon['tailbodyratio'] #talibodywidthratio,
+    pawswidth= fullwidth-tailwidth
+    frontpawwidth=pawswidth*generikmon['frontbackratio'] #fronttobackratio
+    toewidth=frontpawwidth/(numofToes)
+    for i in range(numofToes):
+        turtle.setheading(270)
+        turtle.forward(scale*generikmon['toelengthD'])#toelengthD
+        turtle.right(mirror*90)
+        turtle.forward(mirror*toewidth*0.1)  #mirror required here since xcord is negative on second hlaf
+        # start claw layout calcs
+        xclawstart = turtle.xcor()
+        xclawtip = xclawstart - toewidth*0.4
+        xclawend = xclawtip - toewidth*0.4
+        yclawstart = turtle.ycor()
+        yclawtip = yclawstart-scale*detailsbit['clawlength']
+        yclawend = yclawstart
+        #draw claw (it's already at the start)
+        turtle.goto(xclawtip, yclawtip)
+        turtle.goto(xclawend, yclawend)     
+        turtle.forward(mirror*toewidth*0.1)  #mirror required here since xcord is negative on second hlaf
+        turtle.right(mirror*90)
+        turtle.forward(scale*generikmon['toelengthD']) #toelegnth - going back up               
+      #into the rear toes. # all lengths scaled by generikmon[16] = frontotbackratio
+    toewidth=(pawswidth-frontpawwidth)/numofToes  #redefines toe width for backpaws.
+    for i in range(numofToes):
+        turtle.setheading(270)
+        turtle.forward(scale*generikmon['frontbackratio']*generikmon['toelengthD'])#toelengthD
+        turtle.right(mirror*90)
+        turtle.forward(mirror*toewidth*0.1)  #mirror required here since xcord is negative on second hlaf
+        # start claw layout calcs
+        xclawstart = turtle.xcor()
+        xclawtip = xclawstart - toewidth*0.4
+        xclawend = xclawtip - toewidth*0.4
+        yclawstart = turtle.ycor()
+        yclawtip = yclawstart-scale*detailsbit['clawlength']
+        yclawend = yclawstart
+        #draw claw (it's already at the start)
+        turtle.goto(xclawtip, yclawtip)
+        turtle.goto(xclawend, yclawend)     
+        turtle.forward(mirror*toewidth*0.1)  #mirror required here since xcord is negative on second hlaf
+        turtle.right(mirror*90)
+        turtle.forward(scale*generikmon['frontbackratio']*generikmon['toelengthD']) #toelegnth - going back up
+        
 
     ### draw the ears
     turtle.penup()
@@ -267,6 +317,7 @@ def evalmonster(generikmon):
 ##########################################
 populationtotal = int(input("how many monsters?: "))
 generationtotal = int(input("how many generations?: "))
+focus = str(input("senseEval, hidingEval, strengthEval, speedFOREST, speedMEADOW, speedSWAMP, preybonus, predbonus, metabolisim ?'"))
 populationtotal = populationtotal+1  #needed to make the loop work properly. poptotal = 2 gives one monster
 while (population < populationtotal):
    # print(population)
@@ -288,12 +339,14 @@ while (population < populationtotal):
             
             parentresults = evalmonster(randommon)
             childresults = evalmonster(childmon)
-            if parentresults['predbonus']>childresults['predbonus']:
+            if parentresults[focus]>childresults[focus]:
                 childmon = mutatemonster(scale, randommon)
             else:
                 childmon = mutatemonster(scale, childmon) #generates new monster from whichever one is 'fitter'
                 
             generation=generation+1
+        print(childmon)
         population=population+1    
         print("pop= ", population)
+
     
