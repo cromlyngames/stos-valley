@@ -208,6 +208,7 @@ def evalmonster(generikmon):
 
 ##########################################
 populationtotal = int(input("how many monsters?: "))
+populationtotal = populationtotal+1  #needed to make the loop work properly. poptotal = 2 gives one monster
 while (population < populationtotal):
    # print(population)
     looper=1
