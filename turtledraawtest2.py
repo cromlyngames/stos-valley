@@ -46,6 +46,7 @@ def randommonMaker():
 ####
 def mutatemonster(scale, parentmon):
     badness =2
+    iterator=0
     while badness>0:
         childmon=parentmon
         childdetails = childmon['detail0']
@@ -64,6 +65,10 @@ def mutatemonster(scale, parentmon):
             childmon['numofToes']=childmon['numofToes']+1
         print('Drawing possible child')
         badness =drawmonster(scale, childmon)  # uses the drawing test to see if new monster good, if not repeats the mutation.
+        iterator = iterator+1
+        if iterator == 100:
+            print('giving up')
+            sys.exit()
         print ('badness =', badness)
     print('child accepted')
     return(childmon)
@@ -156,7 +161,6 @@ def drawhalfmonster(mirror, scale, generikmon):
     #line between front and back
     turtle.left(mirror*generikmon['elbowA'])
     turtle.forward(0.5*scale*generikmon['shinD'])
-    turtle.left(mirror*-0.5*generikmon['elbowA'])
     turtle.forward(-0.5*scale*generikmon['shinD'])
     #rearpaw
     turtle.setheading(270)
@@ -294,11 +298,13 @@ def evalmonster(generikmon):
     detailsbit = generikmon['detail0']
     senseEval = 1/4*(detailsbit['eyesize'] +detailsbit['nosesize'] + generikmon['ear2D'] + generikmon['ear6D'])
     hidingEval = 1- 1/5*(generikmon['crownD']+generikmon['cheekD']+generikmon['shoulderD']+generikmon['thighD']+generikmon['shinD'])
-    strengthEval = 1/3*(generikmon['shoulderD']+(1-generikmon['frontbackratio']) + (generikmon['tailbodyratio']))
+    strengthEval = 1/3*(1-generikmon['shoulderD']+(1-generikmon['frontbackratio']) + (1-generikmon['tailbodyratio']))
     speedFOREST = 1/5*(detailsbit['clawlength'] +generikmon['tailspineD'] + generikmon['toelengthD']+generikmon['thighD']+generikmon['shinD'])
-    sprinterelbow = 1- ((90-generikmon['elbowA'])/100)**2  #should be larger as the elbow gets straighter - ie ostrich not lizard
-    speedMEADOW = 1/4*(generikmon['shinD']+generikmon['thighD']+1/generikmon['numofToes']+sprinterelbow)
-    speedSWAMP = 1/3*(generikmon['tailtipD']+(1-generikmon['frontbackratio'])+generikmon['tailbodyratio'])
+    sprinterelbow = 1/(generikmon['elbowA']*2) +1/(90-generikmon['shoulderA']*2)  #should be larger as the elbow gets straighter - ie ostrich not lizard
+    speedMEADOW = 1/3*(generikmon['shinD']+0.5*generikmon['thighD']+1/generikmon['numofToes']+sprinterelbow-detailsbit['clawlength'])
+    #speedMEADOW = sprinterelbow
+    print(sprinterelbow)
+    speedSWAMP = 1/3*(generikmon['tailtipD']+generikmon['frontbackratio']+generikmon['tailbodyratio'])
     preybonus = 1/3*(detailsbit['eyeratio']+generikmon['crownD']+detailsbit['fangtipratio'])
     predbonus = 1/3*(detailsbit['clawlength']+detailsbit['fanglength']+(1-detailsbit['fangtipratio']))
     metabolisim = 1-1/(detailsbit['eyesize']+detailsbit['nosesize']+detailsbit['clawlength']+detailsbit['fanglength']
