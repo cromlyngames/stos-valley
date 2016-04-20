@@ -4,7 +4,7 @@ evo fun by Cromlyn Games
 based off the Stos Valley work here: https://www.reddit.com/r/StosValley/comments/39p172/stos_valley_the_game/
 
 Currently:
-draws random monster, checks if it is a good drawing, repeates until it is. repeats this ten tim3es, outputting image files for each.
+draws random monster, checks if it is a good drawing, repeats until it is. Then it mutates it, checks if the offspring is a good drawing, repeats until it is. Then the two are evaluated against each other with the stronger being kept. This repeats for a user specified number of generations and numbers.
 
 
 Done:
