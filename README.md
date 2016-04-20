@@ -10,23 +10,20 @@ draws random monster, checks if it is a good drawing, repeats until it is. Then 
 Done:
 basic monster drawing
 
-Done:
 basic random monster maker
 
-Done:
 Culler on the monster maker that reports any bad designs
 
-Done:
-export looper to allow ten (or more) examples to be drawn in one operation
+export looper to allow user specced number of  examples to be drawn in one operation
 
-Done:
-Detail eye, mouth
+Details added for eye, mouth, claws
+
 
 TODO:
 
-Detail drawing: fangs, horns, claws, stripes
+Detail drawing: fangs, horns, stripes
 
-Detail culler
+Detail culler - eg if mouth lower than toes kill it. 
 
 powers drawing: fire, ice, elec, light, dark, poison
 
