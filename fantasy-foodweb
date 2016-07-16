@@ -1,0 +1,33 @@
+import random
+
+#The intention is, given inputs, generate a set of animals and some skills
+#generates a feeding matrix to see who eats what
+#scores everything (rock paper scissors). allocates enenergy. adds a mutated creature, repeats. 
+
+testingdetail = { 'expansionslot': 0,
+              'eyeratio': 0.5,   'frownA': 10,     'eyesize': 0.9,
+              'nosesize': 0.5,   'mouthsize': 0.3,  
+            }
+
+Light_eater_compi = { 'SC': 'Height', 'RK': 'Entangling climber', 'PA': 'Symbitotic Defender '}
+Chem_eater_compi = { 'SC': 'Multiple food types', 'RK': 'Colonisation ', 'PA': 'Extremophile'}
+Magic_eater_compi = { 'SC': 'Big', 'RK': 'Magical Resivoirs', 'PA': 'Enviromental discharge'}
+Detri_eater_compi = { 'SC': 'Tendrils', 'RK': 'Mobile life stage', 'PA': 'Digestive ooze'}
+Light_eater_defnd = { 'SC': 'Tall, high leaves', 'RK': 'Woody stems', 'PA': 'Sacrificial Fruits '}
+Chem_eater_defnd = { 'SC': 'Withdrawl reflex', 'RK': 'Heavy metal concentrate', 'PA': 'Stone skin'}
+Magic_eater_defnd = { 'SC': 'Floating/hiding/distracting', 'RK': ' Spines/thorns', 'PA': 'Regeneration'}
+Detri_eater_defnd = { 'SC': 'Deep roots', 'RK': 'Brightly Poisonous', 'PA': 'Parasitic life stage'}
+
+Herbi_eater_compi = { 'RK': 'Rapid growth', 'PA': 'Swarming', 'SC': 'Large'}
+Herbi_eater_predi = { 'RK': 'Long neck/good climber/burrower', 'PA': 'Specialised gut', 'SC': 'Grinding maw/teeth/beak'}
+Herbi_eater_defnd = { 'RK': 'Horns/antlers/tusks/spikes', 'PA': 'Fast and nimble', 'SC': 'Keen senses'}
+
+Meati_eater_compi = { 'PA': ' Climber/flyer/burower', 'SC': 'Larger', 'RK': 'Thick hide/shell '}
+Meati_eater_predi = { 'PA': 'Crushing bite/pounce/squeeze', 'SC': 'Ambush/camouflage', 'RK': 'Venomous strike'}
+Meati_eater_defnd = { 'PA': 'Nomadic', 'SC': 'Territorial', 'RK': 'Pack hunters'}
+
+incoming_light = 1000
+incoming_chem =200
+incoming_magic =500
+incoming_detritus=17
+
