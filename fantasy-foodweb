@@ -4,10 +4,12 @@ import random
 #generates a feeding matrix to see who eats what
 #scores everything (rock paper scissors). allocates enenergy. adds a mutated creature, repeats. 
 
-testingdetail = { 'expansionslot': 0,
-              'eyeratio': 0.5,   'frownA': 10,     'eyesize': 0.9,
-              'nosesize': 0.5,   'mouthsize': 0.3,  
-            }
+#generic beat is shaped like:
+#this_producer={
+#    'name':Name,'type':Producer_type,'Species_energy':Species_energy
+#    'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type}
+# note that fitness is computed on the fly, and used to assign energy
+
 
 Light_eater_compi = { 'SC': 'Height', 'RK': 'Entangling climber', 'PA': 'Symbitotic Defender '}
 Chem_eater_compi = { 'SC': 'Multiple food types', 'RK': 'Colonisation ', 'PA': 'Extremophile'}
@@ -26,8 +28,308 @@ Meati_eater_compi = { 'PA': ' Climber/flyer/burower', 'SC': 'Larger', 'RK': 'Thi
 Meati_eater_predi = { 'PA': 'Crushing bite/pounce/squeeze', 'SC': 'Ambush/camouflage', 'RK': 'Venomous strike'}
 Meati_eater_defnd = { 'PA': 'Nomadic', 'SC': 'Territorial', 'RK': 'Pack hunters'}
 
+dictofdicts ={
+    'Light_eater_compi':    Light_eater_compi,
+    'Chem_eater_compi':     Chem_eater_compi,
+    'Magic_eater_compi':    Magic_eater_compi,
+    'Detri_eater_compi':    Detri_eater_compi,
+
+    'Light_eater_defnd':    Light_eater_defnd,
+    'Chem_eater_defnd':     Chem_eater_defnd,
+    'Magic_eater_defend':   Magic_eater_defnd,
+
+    'Herbi_eater_compi':    Herbi_eater_compi,
+    'Herbi_eater_predi':    Herbi_eater_predi,
+    'Herbi_eater_defnd':    Herbi_eater_defnd,
+
+    'Meati_eater_compi':    Meati_eater_compi,
+    'Meati_eater_predi':    Meati_eater_predi,
+    'Meati_eater_defnd':    Meati_eater_defnd,
+    }
+    
+
+#starter info. Later, this will be a inline input
 incoming_light = 1000
 incoming_chem =200
 incoming_magic =500
 incoming_detritus=17
+
+Number_producers =5
+Number_herbivores = 4
+Number_carnivores = 4
+
+EntryCounters={
+    'Light_counter':100,
+    'Chem_counter' :200,
+    'Magic_counter':300,
+    'Detri_counter':400,
+    'Herbivore_counter':500,
+    'Carnivore_counter':600
+    }
+
+#this function creates a random type of generic skill.
+def Create_skill():
+    type_skill=['SC', 'RK', 'PA']
+    temp_value=random.randint(0,2) #since lists start at 0
+    return(type_skill[temp_value])
+
+#Create a producer. Increment the correct counter.
+def Create_Producer_type(EntryCounters):
+    total_energy = incoming_light+incoming_chem+incoming_magic+incoming_detritus
+    Temp_value= random.randint(1,total_energy)
+    if(Temp_value < incoming_light):
+        Producer_type='Light_eater'
+        EntryCounters['Light_counter'] +=1 #increments it by one
+        Name= EntryCounters['Light_counter']
+        return(Producer_type, EntryCounters, Name)
+    else:
+        Temp_value=Temp_value-incoming_light
+
+    if(Temp_value < incoming_chem):
+        Producer_type='Chem_eater'
+        EntryCounters['Chem_counter'] +=1 #increments it by one
+        Name= EntryCounters['Chem_counter']
+        return(Producer_type, EntryCounters, Name)
+    else:
+        Temp_value=Temp_value-incoming_chem
+
+    if(Temp_value < incoming_magic):
+        Producer_type='Magic_eater'
+        EntryCounters['Magic_counter'] +=1 #increments it by one
+        Name= EntryCounters['Magic_counter']
+        return(Producer_type, EntryCounters, Name)
+    else:
+        Producer_type='Detri_eater'
+        EntryCounters['Detri_counter'] +=1 #increments it by one
+        Name= EntryCounters['Detri_counter']
+        return(Producer_type, EntryCounters, Name)
+        
+def Create_Producer(EntryCounters):
+    #Create_Producer_type could be merged into this function, but meh
+    Producer_type, EntryCounters, Name= Create_Producer_type(EntryCounters)
+    
+    if(random.randint(1,10)==1):
+       compi_type=Create_skill()
+    else: compi_type='--'
+    if(random.randint(1,10)==1):
+       defnd_type=Create_skill()
+    else: defnd_type='--'
+
+    Species_energy = 100    #intilaises everyone the same starting energy.
+    this_producer={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':'--', 'defnd':defnd_type}
+    return(this_producer,EntryCounters)   
+
+#create a new Herbivore
+def Create_Herbivore(EntryCounters):
+    EntryCounters['Herbivore_counter'] +=1
+    Name=EntryCounters['Herbivore_counter']
+    Producer_type= 'Herbi_eater'
+    if(random.randint(1,10)==1):
+       compi_type=Create_skill()
+    else: compi_type='--'
+    if(random.randint(1,10)==1):
+       predi_type=Create_skill()
+    else: predi_type='--'
+    if(random.randint(1,10)==1):
+       defnd_type=Create_skill()
+    else: defnd_type='--'
+    Species_energy = 100    #intilaises everyone the same starting energy.
+    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type}
+    return(this_beast,EntryCounters) 
+
+
+#create a new Carnivore
+def Create_Carnivore(EntryCounters):
+    EntryCounters['Carnivore_counter'] +=1
+    Name=EntryCounters['Carnivore_counter']
+    Producer_type= 'Meati_eater'
+    if(random.randint(1,10)==1):
+       compi_type=Create_skill()
+    else: compi_type='--'
+    if(random.randint(1,10)==1):
+       predi_type=Create_skill()
+    else: predi_type='--'
+    if(random.randint(1,10)==1):
+       defnd_type=Create_skill()
+    else: defnd_type='--'
+    Species_energy = 100    #intilaises everyone the same starting energy.
+    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type}
+    return(this_beast,EntryCounters)
+
+def evaluate_herbivores(dictofherbivores, total_herbivore_energy):
+    #compi setting
+    #calculate the total energy available at this trophic level.
+    basic_share_of_energy=total_herbivore_energy/len(dictofherbivores) #simple average for inital value
+    total_fitness=0
+    #compitition modifiers
+    #start loop. for each monster with 'RK' in compi, add energy to 'RK_energy'
+    #repeat for 'SC' and 'PA'
+    for mainmonster in dictofherbivores:
+        temp_fitness = 1 #assumes all equally fit
+        listofcodes=['RK','PA', 'SC','RK','PA', 'SC','RK'] 
+            
+        for i in range (0,3):
+            first_key=listofcodes[i]
+            second_key=listofcodes[i+1]
+            third_key=listofcodes[i+2]
+            #print(first_key, second_key,third_key)
+            if dictofherbivores[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
+                if dictofherbivores[mainmonster]['compi']==first_key:
+                    #print('first key', first_key)
+                    for tempmonster in dictofherbivores:
+                        if dictofherbivores[tempmonster]['compi']==second_key:
+                            temp_fitness = temp_fitness - 0.1*dictofherbivores[tempmonster]['Species_energy'] # being pushed out
+                        elif dictofherbivores[tempmonster]['compi']==third_key:
+                            temp_fitness = temp_fitness + 0.1*dictofherbivores[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                        else: temp_fitness = temp_fitness +1 #+1 against null skills
+                #END checking cand scoring compi
+
+                #START checking and scoring predi -herbivores eating producers
+                #I am using the global variable for the different producers
+                #BECUASE this function only changes herbivores, not producers
+            if dictofherbivores[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
+                if dictofherbivores[mainmonster]['predi']==first_key:
+                    #print('first key', first_key)
+                    for tempmonster in dictofproducer:
+                        if dictofproducer[tempmonster]['defnd']==second_key:
+                            temp_fitness = temp_fitness - 0.1*dictofproducer[tempmonster]['Species_energy'] # being pushed out
+                        elif dictofproducer[tempmonster]['defnd']==third_key:
+                            temp_fitness = temp_fitness + 0.1*dictofproducer[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                        else: temp_fitness = temp_fitness +1 #+1 against null skills
+                #END checking and scoring predi on producers
+
+                #start checking and scoring defnd against carnivores
+            if dictofherbivores[mainmonster]['defnd']!='--': # only needs to run loops if there is a skill to compare
+                if dictofherbivores[mainmonster]['defnd']==first_key:
+                    #print('first key', first_key)
+                    for tempmonster in dictofcarnivore:
+                        if dictofcarnivore[tempmonster]['predi']==second_key:
+                            temp_fitness = temp_fitness - 0.1*dictofcarnivore[tempmonster]['Species_energy'] # being pushed out
+                        elif dictofcarnivore[tempmonster]['predi']==third_key:
+                            temp_fitness = temp_fitness + 0.1*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                        else: temp_fitness = temp_fitness +1 #+1 against null skills
+           
+                
+            dictofherbivores[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
+                
+            #END looping through for 'RK' for main monster
+        if temp_fitness < 0: temp_fitness=0
+        total_fitness=total_fitness+temp_fitness
+        dictofherbivores[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
+        print(dictofherbivores[mainmonster]['name'],dictofherbivores[mainmonster]['fitness'],dictofherbivores[mainmonster]['compi'],dictofherbivores[mainmonster]['defnd'],dictofherbivores[mainmonster]['predi'])
+        #END looping through all three for main monster. new monster!
+      
+    #END checking and scoring defence against predators
+    print('total fitness', total_fitness)
+
+    for mainmonster in dictofherbivores:
+        share_factor=dictofherbivores[mainmonster]['fitness']/total_fitness
+        dictofherbivores[mainmonster]['Species_energy']=basic_share_of_energy*share_factor
+    #    print_nicely(dictofherbivore[mainmonster])
+
+def prune_dictionary(dictoflivingthings):
+    dictoflivingthings2 = dictoflivingthings
+    for thing in dictoflivingthings2:
+        if dictoflivingthings2[thing]['Species_energy'] == 0:
+            dictoflivingthings=removekey(dictoflivingthings,thing)
+    return(dictoflivingthings)
+
+def removekey(d, key):
+    r = dict(d)
+    del r[key]
+    return r
+
+
+def print_nicely(livingthing):
+    #print('{0} and {1}'.format('spam', 'eggs'))
+    Broad_type=livingthing['type']
+    Broad_compi=livingthing['compi']
+    Broad_predi=livingthing['predi']
+    Broad_defnd=livingthing['defnd']
+    #now, lets look up what the SC, RK PA codes mean for each case
+    if(Broad_compi=='--'):
+        Det_compi=''
+    else:
+        smalldictkey=Broad_type+'_compi'
+        smalldict=dictofdicts[smalldictkey]
+        Det_compi=smalldict[Broad_compi]
+
+    if(Broad_predi=='--'):
+        Det_predi=''
+    else:
+        smalldictkey=Broad_type+'_predi'
+        smalldict=dictofdicts[smalldictkey]
+        Det_predi=smalldict[Broad_predi]
+
+    if(Broad_defnd=='--'):
+        Det_defnd=''
+    else:
+        smalldictkey=Broad_type+'_defnd'
+        smalldict=dictofdicts[smalldictkey]
+        Det_defnd=smalldict[Broad_defnd]
+    if(Det_compi+Det_predi+Det_defnd==''):
+        final_word='nothing'
+    else: final_word=''
+    
+    print('The {0} {1} is noted for {2} {3} {4} {5}.'.format(Broad_type,livingthing['name'],Det_compi,Det_predi,Det_defnd,final_word))
+    print('it has a current fitness score of {0} leading to total species energy of {1}.'.format(livingthing['fitness'],livingthing['Species_energy']))
+    #print('It eats mostly {0}.'.format(livingthing[first_choice_food]))
+    # add something about it's size, popualtion size and species energy.
+
+###########################################################
+# Start main body
+# the first digit of the three code is a 'type' marker
+
+total_producer_energy=incoming_light+incoming_magic+incoming_chem+incoming_detritus
+total_herbivore_energy=total_producer_energy/10
+total_predator_energy=total_producer_energy/100
+
+dictofproducer={} #initialise dictionary
+dictofherbivore={} #initialise dictionary
+dictofcarnivore={} #initialise dictionary
+
+t1= EntryCounters['Light_counter']-100  
+t2= EntryCounters['Chem_counter']-200
+t3= EntryCounters['Magic_counter']-300
+t4= EntryCounters['Detri_counter']-400
+# sum total t1+t2+t3+t4 gives current number of producers
+CurrentNumberProducers=t1+t2+t3+t4
+CurrentNumberHerbivores = EntryCounters['Herbivore_counter']-500
+CurrentNumberCarnivores = EntryCounters['Carnivore_counter']-600
+
+
+
+#Create a producer, randomly proportional to amount of energy available.
+
+for i in range(CurrentNumberProducers, Number_producers+2,1):
+    temp, EntryCounters=Create_Producer(EntryCounters)
+    tempname=temp['name']
+    dictofproducer[tempname]=temp  #adds producer to dictionary
+    #print(dictofproducer)
+
+for i in range(CurrentNumberHerbivores, Number_herbivores+2,1):
+    temp, EntryCounters=Create_Herbivore(EntryCounters)
+    tempname=temp['name']
+    dictofherbivore[tempname]=temp  #adds producer to dictionary
+
+
+for i in range(CurrentNumberCarnivores, Number_carnivores+2,1):
+    temp, EntryCounters=Create_Carnivore(EntryCounters)
+    tempname=temp['name']
+    dictofcarnivore[tempname]=temp  #adds producer to dictionary
+
+evaluate_herbivores(dictofherbivore, total_herbivore_energy)
+dictofherbivore=prune_dictionary(dictofherbivore)
+evaluate_herbivores(dictofherbivore, total_herbivore_energy)
+
+    #print_nicely(temp)
+    #print(EntryCounters)
+#print('---888---')
+#print(dictofproducer)
+#print('---')
+#print(dictofherbivore)
+#print('---')
+#print('test', dictofcarnivore)
+#print(dictofdicts)   #proof that print(dictionary) prints all enteries
+#
 
