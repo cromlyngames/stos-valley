@@ -30,3 +30,7 @@ powers drawing: fire, ice, elec, light, dark, poison
 enviro checks and scoring
 
 evolution checks and scoring
+
+
+FANTASY FOODWEB
+TODO - duplicate the herbivore checks for the carnivores and producers
