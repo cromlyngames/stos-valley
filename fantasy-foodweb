@@ -54,9 +54,9 @@ incoming_chem =200
 incoming_magic =500
 incoming_detritus=17
 
-Number_producers =5
-Number_herbivores = 4
-Number_carnivores = 4
+Number_producers =1
+Number_herbivores = 1
+Number_carnivores = 1
 
 EntryCounters={
     'Light_counter':100,
@@ -156,12 +156,12 @@ def Create_Carnivore(EntryCounters):
     this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type}
     return(this_beast,EntryCounters)
 
-def evaluate_carnivore(dictofcarnivores, total_carnivore_energy):
+def evaluate_carnivores(dictofcarnivore):
     #calculate the total energy available at this trophic level
-    basic_share_of_energy_total=total_ecarnivore_energy/len(dictofcarnivore) #simple average
+    basic_share_of_energy=total_carnivore_energy/len(dictofcarnivore) #simple average
     total_fitness=0
     #competition modifiers
-    for mainmonster in dictofcarnivores:
+    for mainmonster in dictofcarnivore:
         temp_fitness = 1 #assumes all equally fit
         listofcodes=['RK','PA', 'SC','RK','PA', 'SC','RK'] 
             
@@ -170,23 +170,23 @@ def evaluate_carnivore(dictofcarnivores, total_carnivore_energy):
             second_key=listofcodes[i+1]
             third_key=listofcodes[i+2]
             #print(first_key, second_key,third_key)
-            if dictofcarnivores[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
-                if dictofcarnivores[mainmonster]['compi']==first_key:
+            if dictofcarnivore[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
+                if dictofcarnivore[mainmonster]['compi']==first_key:
                     #print('first key', first_key)
-                    for tempmonster in dictofcarnivores:
-                        if dictofcarnivores[tempmonster]['compi']==second_key:
-                            temp_fitness = temp_fitness - 0.1*dictofcarnivores[tempmonster]['Species_energy'] # being pushed out
-                        elif dictofherbivores[tempmonster]['compi']==third_key:
-                            temp_fitness = temp_fitness + 0.1*dictofcarnivores[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
-                        else: temp_fitness = temp_fitness 0.01*dictofcarnivores[tempmonster]['Species_energy'] # against null skills
+                    for tempmonster in dictofcarnivore:
+                        if dictofcarnivore[tempmonster]['compi']==second_key:
+                            temp_fitness = temp_fitness - 0.1*dictofcarnivore[tempmonster]['Species_energy'] # being pushed out
+                        elif dictofcarnivore[tempmonster]['compi']==third_key:
+                            temp_fitness = temp_fitness + 0.1*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                        else: temp_fitness = temp_fitness +0.01*dictofcarnivore[tempmonster]['Species_energy'] # against null skills
                 #END checking cand scoring compi
                 #START checking and scoring predi -carnivores eating herbivores
                 #I am using the global variable for the different producers
                 #BECUASE this function only changes carnivores, not herbivores
-            if dictofcarnivores[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
-                if dictofcarnivores[mainmonster]['predi']==first_key:
+            if dictofcarnivore[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
+                if dictofcarnivore[mainmonster]['predi']==first_key:
                     #print('first key', first_key)
-                    for tempmonster in dictofherbivores:
+                    for tempmonster in dictofherbivore:
                         if dictofherbivore[tempmonster]['defnd']==second_key:
                             temp_fitness = temp_fitness - 0.1*dictofherbivore[tempmonster]['Species_energy'] # being pushed out
                         elif dictofherbivore[tempmonster]['defnd']==third_key:
@@ -196,47 +196,46 @@ def evaluate_carnivore(dictofcarnivores, total_carnivore_energy):
                 #START checking and scoring predi -carnivores eating carnivores (eg bears eating seals)
                 #I am using the global variable for the different producers
                 #BECUASE this function only changes carnivores, not herbivores
-            if dictofcarnivores[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
-                if dictofcarnivores[mainmonster]['predi']==first_key:
+            if dictofcarnivore[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
+                if dictofcarnivore[mainmonster]['predi']==first_key:
                     #print('first key', first_key)
-                    for tempmonster in dictofherbivores:
-                        if dictofcarnivores[tempmonster]!=dictofcarnivore[mainmonster]:  #no fitness bonus from cannibilism!
-                            if dictofcarnivores[tempmonster]['defnd']==second_key:
-                                temp_fitness = temp_fitness - 0.1*dictofcarnivores[tempmonster]['Species_energy'] # being pushed out
-                            elif dictofcarnivores[tempmonster]['defnd']==third_key:
-                                temp_fitness = temp_fitness + 0.1*dictofcarnivores[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
-                            else: temp_fitness = temp_fitness +0.01*dictofcarnivores[tempmonster]['Species_energy'] #+1 against null skills
+                    for tempmonster in dictofcarnivore:
+                        if dictofcarnivore[tempmonster]!=dictofcarnivore[mainmonster]:  #no fitness bonus from cannibilism!
+                            if dictofcarnivore[tempmonster]['defnd']==second_key:
+                                temp_fitness = temp_fitness - 0.1*dictofcarnivore[tempmonster]['Species_energy'] # being pushed out
+                            elif dictofcarnivore[tempmonster]['defnd']==third_key:
+                                temp_fitness = temp_fitness + 0.1*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                            else: temp_fitness = temp_fitness +0.01*dictofcarnivore[tempmonster]['Species_energy'] #+1 against null skills
                 #END checking and scoring predi on other preditors
                 
                         
                 
-            dictofherbivores[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
+            dictofcarnivore[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
                 
             #END looping through for 'RK' for main monster
         if temp_fitness < 0: temp_fitness=0
         total_fitness=total_fitness+temp_fitness
-        dictofherbivores[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
-        print(dictofherbivores[mainmonster]['name'],dictofherbivores[mainmonster]['fitness'],dictofherbivores[mainmonster]['compi'],dictofherbivores[mainmonster]['defnd'],dictofherbivores[mainmonster]['predi'])
+        dictofcarnivore[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
+        print_roughly(dictofcarnivore[mainmonster])
         #END looping through all three for main monster. new monster!
       
     #END checking and scoring defence against predators
     print('total fitness', total_fitness)
 
-    for mainmonster in dictofherbivores:
-        share_factor=dictofherbivores[mainmonster]['fitness']/total_fitness
-        dictofherbivores[mainmonster]['Species_energy']=basic_share_of_energy*share_factor
+    for mainmonster in dictofcarnivore:
+        share_factor=dictofcarnivore[mainmonster]['fitness']/total_fitness
+        dictofcarnivore[mainmonster]['Species_energy']=total_carnivore_energy*share_factor
     #    print_nicely(dictofherbivore[mainmonster])
                 
 
-def evaluate_herbivores(dictofherbivores, total_herbivore_energy):
+def evaluate_herbivores(dictofherbivore):
     #compi setting
-    #calculate the total energy available at this trophic level.
-    basic_share_of_energy=total_herbivore_energy/len(dictofherbivores) #simple average for inital value
+    
     total_fitness=0
     #compitition modifiers
     #start loop. for each monster with 'RK' in compi, add energy to 'RK_energy'
     #repeat for 'SC' and 'PA'
-    for mainmonster in dictofherbivores:
+    for mainmonster in dictofherbivore:
         temp_fitness = 1 #assumes all equally fit
         listofcodes=['RK','PA', 'SC','RK','PA', 'SC','RK'] 
             
@@ -245,22 +244,22 @@ def evaluate_herbivores(dictofherbivores, total_herbivore_energy):
             second_key=listofcodes[i+1]
             third_key=listofcodes[i+2]
             #print(first_key, second_key,third_key)
-            if dictofherbivores[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
-                if dictofherbivores[mainmonster]['compi']==first_key:
+            if dictofherbivore[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
+                if dictofherbivore[mainmonster]['compi']==first_key:
                     #print('first key', first_key)
-                    for tempmonster in dictofherbivores:
-                        if dictofherbivores[tempmonster]['compi']==second_key:
-                            temp_fitness = temp_fitness - 0.1*dictofherbivores[tempmonster]['Species_energy'] # being pushed out
-                        elif dictofherbivores[tempmonster]['compi']==third_key:
-                            temp_fitness = temp_fitness + 0.1*dictofherbivores[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
-                        else: temp_fitness = temp_fitness +0.01*dictofherbivores[tempmonster]['Species_energy'] #+1 against null skills
+                    for tempmonster in dictofherbivore:
+                        if dictofherbivore[tempmonster]['compi']==second_key:
+                            temp_fitness = temp_fitness - 0.1*dictofherbivore[tempmonster]['Species_energy'] # being pushed out
+                        elif dictofherbivore[tempmonster]['compi']==third_key:
+                            temp_fitness = temp_fitness + 0.1*dictofherbivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                        else: temp_fitness = temp_fitness +0.01*dictofherbivore[tempmonster]['Species_energy'] #+1 against null skills
                 #END checking cand scoring compi
 
                 #START checking and scoring predi -herbivores eating producers
                 #I am using the global variable for the different producers
                 #BECUASE this function only changes herbivores, not producers
-            if dictofherbivores[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
-                if dictofherbivores[mainmonster]['predi']==first_key:
+            if dictofherbivore[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
+                if dictofherbivore[mainmonster]['predi']==first_key:
                     #print('first key', first_key)
                     for tempmonster in dictofproducer:
                         if dictofproducer[tempmonster]['defnd']==second_key:
@@ -271,32 +270,88 @@ def evaluate_herbivores(dictofherbivores, total_herbivore_energy):
                 #END checking and scoring predi on producers
 
                 #start checking and scoring defnd against carnivores
-            if dictofherbivores[mainmonster]['defnd']!='--': # only needs to run loops if there is a skill to compare
-                if dictofherbivores[mainmonster]['defnd']==first_key:
+            if dictofherbivore[mainmonster]['defnd']!='--': # only needs to run loops if there is a skill to compare
+                if dictofherbivore[mainmonster]['defnd']==first_key:
                     #print('first key', first_key)
                     for tempmonster in dictofcarnivore:
                         if dictofcarnivore[tempmonster]['predi']==second_key:
                             temp_fitness = temp_fitness - 0.1*dictofcarnivore[tempmonster]['Species_energy'] # being pushed out
                         elif dictofcarnivore[tempmonster]['predi']==third_key:
                             temp_fitness = temp_fitness + 0.1*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
-                        else: temp_fitness = temp_fitness 0.0*dictofcarnivore[tempmonster]['Species_energy'] #+1 against null skills
+                        else: temp_fitness = temp_fitness +0.01*dictofcarnivore[tempmonster]['Species_energy'] #+1 against null skills
            
                 
-            dictofherbivores[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
+            dictofherbivore[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
             #END looping through for 'RK' for main monster
         if temp_fitness < 0: temp_fitness=0
         total_fitness=total_fitness+temp_fitness
-        dictofcarnivores[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
-        print(dictofcarnivores[mainmonster]['name'],dictofcarnivores[mainmonster]['fitness'],dictofcarnivores[mainmonster]['compi'],dictofcarnivores[mainmonster]['defnd'],dictofcarnivores[mainmonster]['predi'])
+        dictofherbivore[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
+        print_roughly(dictofherbivore[mainmonster])
         #END looping through all three for main monster. new monster!
       
     #END checking and scoring defence against predators
     print('total fitness', total_fitness)
 
-    for mainmonster in dictofcarnivores:
-        share_factor=dictofcarnivores[mainmonster]['fitness']/total_fitness
-        dictofcarnivores[mainmonster]['Species_energy']=basic_share_of_energy*share_factor
+    for mainmonster in dictofherbivore:
+        share_factor=dictofherbivore[mainmonster]['fitness']/total_fitness
+        dictofherbivore[mainmonster]['Species_energy']=total_herbivore_energy*share_factor
     #    print_nicely(dictofcarnivore[mainmonster])
+
+##################
+
+def evaluate_producers(dictofproducer):
+    #basic_share_of_energy=total_producer_energy/len(dictofproducer) #simple average for inital value
+    # have to calcualte shares based on indivisual enenergy sources.
+    total_fitness=0
+
+    for mainmonster in dictofproducer:
+        temp_fitness = 1 #assumes all equally fit
+        listofcodes=['RK','PA', 'SC','RK','PA', 'SC','RK'] 
+            
+        for i in range (0,3):
+            first_key=listofcodes[i]
+            second_key=listofcodes[i+1]
+            third_key=listofcodes[i+2]
+            #print(first_key, second_key,third_key)
+            if dictofproducer[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
+                if dictofproducer[mainmonster]['compi']==first_key:
+                    #print('first key', first_key)
+                    for tempmonster in dictofproducer:
+                        if dictofproducer[tempmonster]['compi']==second_key:
+                            temp_fitness = temp_fitness - 0.1*dictofproducer[tempmonster]['Species_energy'] # being pushed out
+                        elif dictofproducer[tempmonster]['compi']==third_key:
+                            temp_fitness = temp_fitness + 0.1*dictofproducer[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                        else: temp_fitness = temp_fitness +0.01*dictofproducer[tempmonster]['Species_energy'] #+1 against null skills
+                #END checking cand scoring compi
+                 #start checking and scoring defnd against herbivores eating them
+            if dictofproducer[mainmonster]['defnd']!='--': # only needs to run loops if there is a skill to compare
+                if dictofproducer[mainmonster]['defnd']==first_key:
+                    #print('first key', first_key)
+                    for tempmonster in dictofherbivore:
+                        if dictofherbivore[tempmonster]['predi']==second_key:
+                            temp_fitness = temp_fitness - 0.1*dictofherbivore[tempmonster]['Species_energy'] # being pushed out
+                        elif dictofherbivore[tempmonster]['predi']==third_key:
+                            temp_fitness = temp_fitness + 0.1*dictofherbivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                        else: temp_fitness = temp_fitness +0.01*dictofherbivore[tempmonster]['Species_energy'] #+1 against null skills
+           
+                
+            dictofproducer[mainmonster]['fitness']=temp_fitness #set this monser's fitness from compi
+            #END looping through for 'RK' for main monster
+        if temp_fitness < 0: temp_fitness=0
+        total_fitness=total_fitness+temp_fitness
+        dictofproducer[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
+        print_roughly(dictofproducer[mainmonster])
+        #END looping through all three for main monster. new monster!
+      
+    #END checking and scoring defence against predators
+    print('total fitness', total_fitness)
+
+    for mainmonster in dictofproducer:
+        share_factor=dictofproducer[mainmonster]['fitness']/total_fitness
+        dictofproducer[mainmonster]['Species_energy']=total_herbivore_energy*share_factor
+    #    print_nicely(dictofcarnivore[mainmonster])
+
+
 
 ######################################################
 
@@ -312,6 +367,9 @@ def removekey(d, key):
     del r[key]
     return r
 
+def print_roughly(livingthing):
+    print(livingthing['name'],livingthing['compi'],livingthing['defnd'],livingthing['predi'])
+    print('---, ', livingthing['fitness'], livingthing['Species_energy'])
 
 def print_nicely(livingthing):
     #print('{0} and {1}'.format('spam', 'eggs'))
@@ -355,7 +413,7 @@ def print_nicely(livingthing):
 
 total_producer_energy=incoming_light+incoming_magic+incoming_chem+incoming_detritus
 total_herbivore_energy=total_producer_energy/10
-total_predator_energy=total_producer_energy/100
+total_carnivore_energy=total_producer_energy/100
 
 dictofproducer={} #initialise dictionary
 dictofherbivore={} #initialise dictionary
@@ -391,9 +449,17 @@ for i in range(CurrentNumberCarnivores, Number_carnivores+2,1):
     tempname=temp['name']
     dictofcarnivore[tempname]=temp  #adds producer to dictionary
 
-evaluate_herbivores(dictofherbivore, total_herbivore_energy)
+evaluate_producers(dictofproducer)
+evaluate_herbivores(dictofherbivore)
+evaluate_carnivores(dictofcarnivore)
+
+dictofproducer=prune_dictionary(dictofproducer)
 dictofherbivore=prune_dictionary(dictofherbivore)
-evaluate_herbivores(dictofherbivore, total_herbivore_energy)
+dictofcarnivore=prune_dictionary(dictofcarnivore)
+
+evaluate_producers(dictofproducer)
+evaluate_herbivores(dictofherbivore)
+evaluate_carnivores(dictofcarnivore)
 
     #print_nicely(temp)
     #print(EntryCounters)
