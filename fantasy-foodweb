@@ -346,10 +346,29 @@ def evaluate_producers(dictofproducer):
     #END checking and scoring defence against predators
     print('total fitness', total_fitness)
 
+    light_fitness=1  # seperate fitness totals needed for each source
+    chem_fitness=1   # to stop light eaters feast on chem energy ect.
+    magic_fitness=1
+    detri_fitness=1
+    
     for mainmonster in dictofproducer:
-        share_factor=dictofproducer[mainmonster]['fitness']/total_fitness
-        dictofproducer[mainmonster]['Species_energy']=total_herbivore_energy*share_factor
-    #    print_nicely(dictofcarnivore[mainmonster])
+        #share_factor=dictofproducer[mainmonster]['fitness']/total_fitness
+        #dictofproducer[mainmonster]['Species_energy']=total_herbivore_energy*share_factor
+        if dictofproducer[mainmonster]['type']=='Light_eater':
+            light_fitness =light_fitness+dictofproducer[mainmonster]['fitness']
+        elif dictofproducer[mainmonster]['type']=='Chem_eater':
+            chem_fitness =chem_fitness+dictofproducer[mainmonster]['fitness']
+        elif dictofproducer[mainmonster]['type']=='Magic_eater':
+            magic_fitness =magic_fitness+dictofproducer[mainmonster]['fitness']
+        elif dictofproducer[mainmonster]['type']=='Detri_eater':
+            detri_fitness =detri_fitness+dictofproducer[mainmonster]['fitness']
+    
+    #tota;s found, let's share out the energy
+    for mainmonster in dictofproducer:
+        share_factor=dictofproducer[mainmonster]['fitness']/light_fitness
+        dictofproducer[mainmonster]['Species_energy']=incoming_light/share_factor
+
+    
 
 
 
@@ -368,8 +387,8 @@ def removekey(d, key):
     return r
 
 def print_roughly(livingthing):
-    print(livingthing['name'],livingthing['compi'],livingthing['defnd'],livingthing['predi'])
-    print('---, ', livingthing['fitness'], livingthing['Species_energy'])
+    print(livingthing['name'],livingthing['compi'],livingthing['defnd'],livingthing['predi'],'  ', livingthing['fitness'], livingthing['Species_energy'])
+    
 
 def print_nicely(livingthing):
     #print('{0} and {1}'.format('spam', 'eggs'))
@@ -432,34 +451,32 @@ CurrentNumberCarnivores = EntryCounters['Carnivore_counter']-600
 
 #Create a producer, randomly proportional to amount of energy available.
 
-for i in range(CurrentNumberProducers, Number_producers+2,1):
+for i in range(CurrentNumberProducers, Number_producers,1):
     temp, EntryCounters=Create_Producer(EntryCounters)
     tempname=temp['name']
     dictofproducer[tempname]=temp  #adds producer to dictionary
     #print(dictofproducer)
 
-for i in range(CurrentNumberHerbivores, Number_herbivores+2,1):
+for i in range(CurrentNumberHerbivores, Number_herbivores,1):
     temp, EntryCounters=Create_Herbivore(EntryCounters)
     tempname=temp['name']
     dictofherbivore[tempname]=temp  #adds producer to dictionary
 
 
-for i in range(CurrentNumberCarnivores, Number_carnivores+2,1):
+for i in range(CurrentNumberCarnivores, Number_carnivores,1):
     temp, EntryCounters=Create_Carnivore(EntryCounters)
     tempname=temp['name']
     dictofcarnivore[tempname]=temp  #adds producer to dictionary
 
-evaluate_producers(dictofproducer)
-evaluate_herbivores(dictofherbivore)
-evaluate_carnivores(dictofcarnivore)
 
-dictofproducer=prune_dictionary(dictofproducer)
-dictofherbivore=prune_dictionary(dictofherbivore)
-dictofcarnivore=prune_dictionary(dictofcarnivore)
+for x in range(0,10):
+    dictofproducer=prune_dictionary(dictofproducer)
+    dictofherbivore=prune_dictionary(dictofherbivore)
+    dictofcarnivore=prune_dictionary(dictofcarnivore)
 
-evaluate_producers(dictofproducer)
-evaluate_herbivores(dictofherbivore)
-evaluate_carnivores(dictofcarnivore)
+    evaluate_producers(dictofproducer)
+    evaluate_herbivores(dictofherbivore)
+    evaluate_carnivores(dictofcarnivore)
 
     #print_nicely(temp)
     #print(EntryCounters)
