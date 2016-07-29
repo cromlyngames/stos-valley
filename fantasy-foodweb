@@ -50,11 +50,11 @@ dictofdicts ={
 
 #starter info. Later, this will be a inline input
 incoming_light = 1000
-incoming_chem =200
-incoming_magic =500
-incoming_detritus=17
+incoming_chem =00
+incoming_magic =00
+incoming_detritus=0
 
-Number_producers =1
+Number_producers =10
 Number_herbivores = 1
 Number_carnivores = 1
 
@@ -299,7 +299,9 @@ def evaluate_herbivores(dictofherbivore):
 
 ##################
 
-def evaluate_producers(dictofproducer):
+def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_energy):
+    #total hrebivore energy since that global one has to be altered.
+    #EG if there is only one producer and it's a light_eater, the uncaptured chem_energy is lost
     #basic_share_of_energy=total_producer_energy/len(dictofproducer) #simple average for inital value
     # have to calcualte shares based on indivisual enenergy sources.
     total_fitness=0
@@ -364,9 +366,24 @@ def evaluate_producers(dictofproducer):
             detri_fitness =detri_fitness+dictofproducer[mainmonster]['fitness']
     
     #tota;s found, let's share out the energy
+    total_producer_energy =0
     for mainmonster in dictofproducer:
-        share_factor=dictofproducer[mainmonster]['fitness']/light_fitness
-        dictofproducer[mainmonster]['Species_energy']=incoming_light/share_factor
+        if dictofproducer[mainmonster]['type']=='Light_eater':
+            share_factor=dictofproducer[mainmonster]['fitness']/light_fitness
+            dictofproducer[mainmonster]['Species_energy']=incoming_light/share_factor
+        elif dictofproducer[mainmonster]['type']=='Chem_eater':
+            share_factor=dictofproducer[mainmonster]['fitness']/chem_fitness
+            dictofproducer[mainmonster]['Species_energy']=incoming_chem/share_factor
+        elif dictofproducer[mainmonster]['type']=='Magic_eater':
+            share_factor=dictofproducer[mainmonster]['fitness']/magic_fitness
+            dictofproducer[mainmonster]['Species_energy']=incoming_magic/share_factor
+        elif dictofproducer[mainmonster]['type']=='Detri_eater':
+            share_factor=dictofproducer[mainmonster]['fitness']/detri_fitness
+            dictofproducer[mainmonster]['Species_energy']=incoming_detri/share_factor
+        total_producer_energy=total_producer_energy+dictofproducer[mainmonster]['Species_energy']
+    total_herbivore_energy = total_producer_energy/10
+    total_carnivore_energy = total_producer_energy/100
+    return(dictofproducer, total_herbivore_energy, total_carnivore_energy)
 
     
 
@@ -430,6 +447,8 @@ def print_nicely(livingthing):
 # Start main body
 # the first digit of the three code is a 'type' marker
 
+#inital best guess. Reliable when lots of producers
+#will be corrected later, once you know how much energy is caputred
 total_producer_energy=incoming_light+incoming_magic+incoming_chem+incoming_detritus
 total_herbivore_energy=total_producer_energy/10
 total_carnivore_energy=total_producer_energy/100
@@ -474,7 +493,7 @@ for x in range(0,10):
     dictofherbivore=prune_dictionary(dictofherbivore)
     dictofcarnivore=prune_dictionary(dictofcarnivore)
 
-    evaluate_producers(dictofproducer)
+    dictofproducer, total_herbivore_energy, total_carnivore_energy = evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_energy)
     evaluate_herbivores(dictofherbivore)
     evaluate_carnivores(dictofcarnivore)
 
