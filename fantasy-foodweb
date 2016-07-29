@@ -50,13 +50,13 @@ dictofdicts ={
 
 #starter info. Later, this will be a inline input
 incoming_light = 1000
-incoming_chem =00
-incoming_magic =00
-incoming_detritus=0
+incoming_chem =1000
+incoming_magic =1000
+incoming_detritus=1000
 
-Number_producers =10
-Number_herbivores = 1
-Number_carnivores = 1
+Number_producers =8
+Number_herbivores = 3
+Number_carnivores = 3
 
 EntryCounters={
     'Light_counter':100,
@@ -108,10 +108,10 @@ def Create_Producer(EntryCounters):
     #Create_Producer_type could be merged into this function, but meh
     Producer_type, EntryCounters, Name= Create_Producer_type(EntryCounters)
     
-    if(random.randint(1,10)==1):
+    if(random.randint(1,5)==1):
        compi_type=Create_skill()
     else: compi_type='--'
-    if(random.randint(1,10)==1):
+    if(random.randint(1,5)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
 
@@ -124,13 +124,13 @@ def Create_Herbivore(EntryCounters):
     EntryCounters['Herbivore_counter'] +=1
     Name=EntryCounters['Herbivore_counter']
     Producer_type= 'Herbi_eater'
-    if(random.randint(1,10)==1):
+    if(random.randint(1,5)==1):
        compi_type=Create_skill()
     else: compi_type='--'
-    if(random.randint(1,10)==1):
+    if(random.randint(1,5)==1):
        predi_type=Create_skill()
     else: predi_type='--'
-    if(random.randint(1,10)==1):
+    if(random.randint(1,5)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
     Species_energy = 100    #intilaises everyone the same starting energy.
@@ -143,13 +143,13 @@ def Create_Carnivore(EntryCounters):
     EntryCounters['Carnivore_counter'] +=1
     Name=EntryCounters['Carnivore_counter']
     Producer_type= 'Meati_eater'
-    if(random.randint(1,10)==1):
+    if(random.randint(1,5)==1):
        compi_type=Create_skill()
     else: compi_type='--'
-    if(random.randint(1,10)==1):
+    if(random.randint(1,5)==1):
        predi_type=Create_skill()
     else: predi_type='--'
-    if(random.randint(1,10)==1):
+    if(random.randint(1,5)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
     Species_energy = 100    #intilaises everyone the same starting energy.
@@ -370,16 +370,16 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
     for mainmonster in dictofproducer:
         if dictofproducer[mainmonster]['type']=='Light_eater':
             share_factor=dictofproducer[mainmonster]['fitness']/light_fitness
-            dictofproducer[mainmonster]['Species_energy']=incoming_light/share_factor
+            dictofproducer[mainmonster]['Species_energy']=incoming_light*share_factor
         elif dictofproducer[mainmonster]['type']=='Chem_eater':
             share_factor=dictofproducer[mainmonster]['fitness']/chem_fitness
-            dictofproducer[mainmonster]['Species_energy']=incoming_chem/share_factor
+            dictofproducer[mainmonster]['Species_energy']=incoming_chem*share_factor
         elif dictofproducer[mainmonster]['type']=='Magic_eater':
             share_factor=dictofproducer[mainmonster]['fitness']/magic_fitness
-            dictofproducer[mainmonster]['Species_energy']=incoming_magic/share_factor
+            dictofproducer[mainmonster]['Species_energy']=incoming_magic*share_factor
         elif dictofproducer[mainmonster]['type']=='Detri_eater':
             share_factor=dictofproducer[mainmonster]['fitness']/detri_fitness
-            dictofproducer[mainmonster]['Species_energy']=incoming_detri/share_factor
+            dictofproducer[mainmonster]['Species_energy']=incoming_detritus*share_factor
         total_producer_energy=total_producer_energy+dictofproducer[mainmonster]['Species_energy']
     total_herbivore_energy = total_producer_energy/10
     total_carnivore_energy = total_producer_energy/100
@@ -392,13 +392,20 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
 ######################################################
 
 def prune_dictionary(dictoflivingthings):
+    # this removes any species who's energy has fallen to zero - ie gone extinct
     dictoflivingthings2 = dictoflivingthings
     for thing in dictoflivingthings2:
         if dictoflivingthings2[thing]['Species_energy'] == 0:
             dictoflivingthings=removekey(dictoflivingthings,thing)
     return(dictoflivingthings)
 
+def cull_weakest(dictoflivingthings):
+    #this removes any species with the least energy in that dict.
+    dictoflivingthings2 =dictoflivingthings
+    #implement a naive bubble sort to find creature with lowest species energy and send to remove_key
+    
 def removekey(d, key):
+    #the fucntion that actually kills species and removes from dictionary.
     r = dict(d)
     del r[key]
     return r
@@ -488,7 +495,7 @@ for i in range(CurrentNumberCarnivores, Number_carnivores,1):
     dictofcarnivore[tempname]=temp  #adds producer to dictionary
 
 
-for x in range(0,10):
+for x in range(0,4):
     dictofproducer=prune_dictionary(dictofproducer)
     dictofherbivore=prune_dictionary(dictofherbivore)
     dictofcarnivore=prune_dictionary(dictofcarnivore)
