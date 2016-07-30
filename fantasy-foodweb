@@ -37,6 +37,7 @@ dictofdicts ={
     'Light_eater_defnd':    Light_eater_defnd,
     'Chem_eater_defnd':     Chem_eater_defnd,
     'Magic_eater_defend':   Magic_eater_defnd,
+    'Detri_eater_compi':    Detri_eater_compi,
 
     'Herbi_eater_compi':    Herbi_eater_compi,
     'Herbi_eater_predi':    Herbi_eater_predi,
@@ -414,7 +415,14 @@ def print_roughly(livingthing):
     print(livingthing['name'],livingthing['compi'],livingthing['defnd'],livingthing['predi'],'  ', livingthing['fitness'], livingthing['Species_energy'])
     
 
-def print_nicely(livingthing):
+def print_nicely(livingthingname):
+    if 100 <livingthingname<499:
+        dictofthings=dictofproducer
+    elif 500 <livingthingname <599:
+        dictofthings=dictofherbivore
+    else: dictofthings=dictofcarnivore
+    
+    livingthing=dictofthings[livingthingname]
     #print('{0} and {1}'.format('spam', 'eggs'))
     Broad_type=livingthing['type']
     Broad_compi=livingthing['compi']
