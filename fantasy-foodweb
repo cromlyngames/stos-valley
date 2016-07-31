@@ -402,11 +402,21 @@ def prune_dictionary(dictoflivingthings):
 
 def cull_weakest(dictoflivingthings):
     #this removes any species with the least energy in that dict.
-    dictoflivingthings2 =dictoflivingthings
+    dolt2 =dictoflivingthings #shortened to dolt2 here to save typing
+    #tempvalue=list(dolt2.keys())[0]  #creates a list of the keys and returns the first. The list order is based on the semi-arbitary dictonary order. all that matters is a value is chosen
+    weakest={'Species_energy':10000}  #initalise with an arbitary weakest monster
+    dolt2['weakest']=weakest
+    for thing in dolt2:
+        if dolt2[thing]['Species_energy']<dolt2['weakest']['Species_energy']:
+            dolt2['weakest'] = dolt2[thing]
+            print('new weakest: ', dolt2['weakest'])
+    
+    removekey(dolt2, 'weakest')
+    return(dictoflivingthings)
     #implement a naive bubble sort to find creature with lowest species energy and send to remove_key
     
 def removekey(d, key):
-    #the fucntion that actually kills species and removes from dictionary.
+    #the fucntion that actually kills species and removes from dictionary. from Stackexchange
     r = dict(d)
     del r[key]
     return r
