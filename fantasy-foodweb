@@ -4,6 +4,11 @@ import random
 #generates a feeding matrix to see who eats what
 #scores everything (rock paper scissors). allocates enenergy. adds a mutated creature, repeats. 
 
+#TODO - get size effects into carnivore evaluation.
+#TODO - fix final evaluation stage. Cull and evaluate back each dictionary until they are the right length
+
+
+
 #generic beat is shaped like:
 #this_producer={
 #    'name':Name,'type':Producer_type,'Species_energy':Species_energy
@@ -47,7 +52,17 @@ dictofdicts ={
     'Meati_eater_predi':    Meati_eater_predi,
     'Meati_eater_defnd':    Meati_eater_defnd,
     }
-    
+dictofseize ={
+    1:'tiny, ant',
+    2:'small, rat',
+    3:'medium, fox',
+    4:'human sized',
+    5:'large, bear',
+    6:'big, horse',
+    7:'huge, T-Rex',  
+    8:'giant, diplodocus',
+    9:'leviathan, small hill' 
+    }    
 
 #starter info. Later, this will be a inline input
 incoming_light = 1000
@@ -55,7 +70,7 @@ incoming_chem =1000
 incoming_magic =1000
 incoming_detritus=1000
 
-Number_producers =8
+Number_producers =5
 Number_herbivores = 3
 Number_carnivores = 3
 
@@ -73,6 +88,13 @@ def Create_skill():
     type_skill=['SC', 'RK', 'PA']
     temp_value=random.randint(0,2) #since lists start at 0
     return(type_skill[temp_value])
+
+def Create_size():
+    temp = random.randint(-1,9)
+    for x in range (0,4):
+        temp = temp + random.randint(-1,9) #gives nice normal distribution about 3.6
+    Size = int(abs(temp)) #makes sure size >0 and an nice integer
+    return(Size)
 
 #Create a producer. Increment the correct counter.
 def Create_Producer_type(EntryCounters):
@@ -134,8 +156,10 @@ def Create_Herbivore(EntryCounters):
     if(random.randint(1,5)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
+     
+    Size = Create_size()
     Species_energy = 100    #intilaises everyone the same starting energy.
-    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type}
+    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'Size':Size}
     return(this_beast,EntryCounters) 
 
 
@@ -153,8 +177,12 @@ def Create_Carnivore(EntryCounters):
     if(random.randint(1,5)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
+
+    Size = Create_size()
+    Prey_size = Create_size()
+
     Species_energy = 100    #intilaises everyone the same starting energy.
-    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type}
+    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'Size'=Size, 'Prey_size'=Prey_size}
     return(this_beast,EntryCounters)
 
 def evaluate_carnivores(dictofcarnivore):
@@ -387,6 +415,26 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
     return(dictofproducer, total_herbivore_energy, total_carnivore_energy)
 
     
+##############
+
+def refill_foodweb(EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores,  dictofproducer, dictofherbivore, dictofcarnivore):
+    for i in range(CurrentNumberProducers, Number_producers,1):
+        temp, EntryCounters=Create_Producer(EntryCounters)
+        tempname=temp['name']
+        dictofproducer[tempname]=temp  #adds producer to dictionary
+        #print(dictofproducer)
+
+    for i in range(CurrentNumberHerbivores, Number_herbivores,1):
+        temp, EntryCounters=Create_Herbivore(EntryCounters)
+        tempname=temp['name']
+        dictofherbivore[tempname]=temp  #adds producer to dictionary
+
+
+    for i in range(CurrentNumberCarnivores, Number_carnivores,1):
+        temp, EntryCounters=Create_Carnivore(EntryCounters)
+        tempname=temp['name']
+        dictofcarnivore[tempname]=temp  #adds producer to dictionary
+    return(EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores, dictofproducer, dictofherbivore, dictofcarnivore)
 
 
 
@@ -409,14 +457,16 @@ def cull_weakest(dictoflivingthings):
     for thing in dolt2:
         if dolt2[thing]['Species_energy']<dolt2['weakest']['Species_energy']:
             dolt2['weakest'] = dolt2[thing]
-            print('new weakest: ', dolt2['weakest'])
+            print('new weakest: ', dolt2['weakest']['name'])
     
-    removekey(dolt2, 'weakest')
+    dictoflivingthings = removekey(dictoflivingthings, dolt2['weakest']['name'])
+    dictoflivingthings = removekey(dictoflivingthings, 'weakest')
     return(dictoflivingthings)
     #implement a naive bubble sort to find creature with lowest species energy and send to remove_key
     
 def removekey(d, key):
     #the fucntion that actually kills species and removes from dictionary. from Stackexchange
+    print(key, ' is now extinct')
     r = dict(d)
     del r[key]
     return r
@@ -514,13 +564,43 @@ for i in range(CurrentNumberCarnivores, Number_carnivores,1):
 
 
 for x in range(0,4):
+    #prunes the zero's out. evalutes until stable, cull's weakest. refills's foodweb. evals, prunes and repeats
     dictofproducer=prune_dictionary(dictofproducer)
     dictofherbivore=prune_dictionary(dictofherbivore)
     dictofcarnivore=prune_dictionary(dictofcarnivore)
 
+    for x in range(0,4):
+        dictofproducer, total_herbivore_energy, total_carnivore_energy = evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_energy)
+        evaluate_herbivores(dictofherbivore)
+        evaluate_carnivores(dictofcarnivore)
+
+    dictofproducer =cull_waekest(dictofherbivore)
+    dictofherbivore = cull_weakest(dictofherbivore)
+    dictofcarnivore = cull_weakest(dictofcarnivore)
+
+    EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores, dictofproducer, dictofherbivore, dictofcarnivore = refill_foodweb(EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores,  dictofproducer, dictofherbivore, dictofcarnivore)
+
     dictofproducer, total_herbivore_energy, total_carnivore_energy = evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_energy)
     evaluate_herbivores(dictofherbivore)
     evaluate_carnivores(dictofcarnivore)
+
+for x in range(0,4):
+    #final evaluation set to produce good foodweb.
+    print(' ')
+    print('--- Final stablisation of foodweb ---')
+    print(' ')
+    dictofproducer=prune_dictionary(dictofproducer)
+    dictofherbivore=prune_dictionary(dictofherbivore)
+    dictofcarnivore=prune_dictionary(dictofcarnivore)
+
+   
+    dictofproducer, total_herbivore_energy, total_carnivore_energy = evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_energy)
+    evaluate_herbivores(dictofherbivore)
+    evaluate_carnivores(dictofcarnivore)
+
+
+
+    
 
     #print_nicely(temp)
     #print(EntryCounters)
