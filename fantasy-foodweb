@@ -94,6 +94,9 @@ def Create_size():
     for x in range (0,4):
         temp = temp + random.randint(-1,9) #gives nice normal distribution about 3.6
     Size = int(abs(temp)) #makes sure size >0 and an nice integer
+    while Size >9:
+        Size=Size-9
+        
     return(Size)
 
 #Create a producer. Increment the correct counter.
@@ -182,7 +185,7 @@ def Create_Carnivore(EntryCounters):
     Prey_size = Create_size()
 
     Species_energy = 100    #intilaises everyone the same starting energy.
-    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'Size'=Size, 'Prey_size'=Prey_size}
+    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'Size':Size, 'Prey_size':Prey_size}
     return(this_beast,EntryCounters)
 
 def evaluate_carnivores(dictofcarnivore):
@@ -574,7 +577,7 @@ for x in range(0,4):
         evaluate_herbivores(dictofherbivore)
         evaluate_carnivores(dictofcarnivore)
 
-    dictofproducer =cull_waekest(dictofherbivore)
+    dictofproducer =cull_weakest(dictofherbivore)
     dictofherbivore = cull_weakest(dictofherbivore)
     dictofcarnivore = cull_weakest(dictofcarnivore)
 
@@ -586,18 +589,15 @@ for x in range(0,4):
 
 for x in range(0,4):
     #final evaluation set to produce good foodweb.
-    print(' ')
-    print('--- Final stablisation of foodweb ---')
-    print(' ')
+    
     dictofproducer=prune_dictionary(dictofproducer)
     dictofherbivore=prune_dictionary(dictofherbivore)
     dictofcarnivore=prune_dictionary(dictofcarnivore)
-
    
     dictofproducer, total_herbivore_energy, total_carnivore_energy = evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_energy)
     evaluate_herbivores(dictofherbivore)
     evaluate_carnivores(dictofcarnivore)
-
+    
 
 
     
