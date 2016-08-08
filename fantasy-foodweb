@@ -259,6 +259,19 @@ def evaluate_carnivores(dictofcarnivore):
         dictofcarnivore[mainmonster]['Species_energy']=total_carnivore_energy*share_factor
     #    print_nicely(dictofherbivore[mainmonster])
                 
+def evaluate_prey_size(size, prey_size):
+    #cases - can eat normally down two or up 1 size.
+    
+    if size-2>=prey_size>=size+1:
+        factor=1.0
+        return(factor)
+    elif size>prey_size:
+        factor =0.1*prey_size/size
+        return(factor)
+    elif size<preysize:
+        factor = 0.1*size/prey_size
+        return(factor)
+        
 
 def evaluate_herbivores(dictofherbivore):
     #compi setting
