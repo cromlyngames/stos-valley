@@ -216,6 +216,11 @@ def evaluate_carnivores(dictofcarnivore):
                 #I am using the global variable for the different producers
                 #BECUASE this function only changes carnivores, not herbivores
             if dictofcarnivore[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
+
+# QUESTION: IF THE MAINMONSTER has a null skill for predi, how do they get fitness bonuses? bollocks. better add a 2nd loop that does the eating for a '--' predi
+
+
+
                 if dictofcarnivore[mainmonster]['predi']==first_key:
                     #print('first key', first_key)
                     for tempmonster in dictofherbivore:
@@ -361,7 +366,7 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
             third_key=listofcodes[i+2]
             #print(first_key, second_key,third_key)
             if dictofproducer[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
-                if dictofproducer[mainmonster]['compi']==first_key:
+                if dictofproducer[mainmonster]['compi']==first_key: #
                     #print('first key', first_key)
                     for tempmonster in dictofproducer:
                         if dictofproducer[tempmonster]['compi']==second_key:
@@ -486,6 +491,8 @@ def removekey(d, key):
     r = dict(d)
     del r[key]
     return r
+
+########################################
 
 def print_roughly(livingthing):
     print(livingthing['name'],livingthing['compi'],livingthing['defnd'],livingthing['predi'],'  ', livingthing['fitness'], livingthing['Species_energy'])
