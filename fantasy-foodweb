@@ -7,7 +7,10 @@ import random
 #TODO - get size effects into carnivore evaluation.
 #TODO - fix final evaluation stage. Cull and evaluate back each dictionary until they are the right length
 
-
+#todo - incorp looped carni and herib behaviour
+#  flee from danger - beaten by endurance hunter
+# defend aggresivley - beaten by killer charge hunter
+# sense and avoid - beaten by ambush hunter
 
 #generic beat is shaped like:
 #this_producer={
