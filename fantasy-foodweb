@@ -222,16 +222,17 @@ def evaluate_carnivores(dictofcarnivore):
 
 # QUESTION: IF THE MAINMONSTER has a null skill for predi, how do they get fitness bonuses? bollocks. better add a 2nd loop that does the eating for a '--' predi
 
-
-
                 if dictofcarnivore[mainmonster]['predi']==first_key:
                     #print('first key', first_key)
                     for tempmonster in dictofherbivore:
+                        size = dictofcarnivore[mainmonster]['Prey_size']
+                        prey_size = dictofherbivore[tempmonster]['Size']                              
+                        size_factor = evaluate_prey_size(size, prey_size) # measures how good the carnivore would be at catching the herbivore
                         if dictofherbivore[tempmonster]['defnd']==second_key:
-                            temp_fitness = temp_fitness - 0.1*dictofherbivore[tempmonster]['Species_energy'] # being pushed out
+                            temp_fitness = temp_fitness - 0.1*size_factor*dictofherbivore[tempmonster]['Species_energy'] # being pushed out
                         elif dictofherbivore[tempmonster]['defnd']==third_key:
-                            temp_fitness = temp_fitness + 0.1*dictofherbivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
-                        else: temp_fitness = temp_fitness +0.01*dictofherbivore[tempmonster]['Species_energy'] #+1 against null skills
+                            temp_fitness = temp_fitness + 0.1*size_factor*dictofherbivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                        else: temp_fitness = temp_fitness +0.01*size_factor*dictofherbivore[tempmonster]['Species_energy'] #+1 against null skills
                 #END checking and scoring predi on herbivores
                 #START checking and scoring predi -carnivores eating carnivores (eg bears eating seals)
                 #I am using the global variable for the different producers
@@ -240,12 +241,15 @@ def evaluate_carnivores(dictofcarnivore):
                 if dictofcarnivore[mainmonster]['predi']==first_key:
                     #print('first key', first_key)
                     for tempmonster in dictofcarnivore:
+                        size = dictofcarnivore[mainmonster]['Prey_size']
+                        prey_size = dictofcarnivore[tempmonster]['Size']                              
+                        size_factor = evaluate_prey_size(size, prey_size) # measures how good the carnivore would be at catching the other predator
                         if dictofcarnivore[tempmonster]!=dictofcarnivore[mainmonster]:  #no fitness bonus from cannibilism!
                             if dictofcarnivore[tempmonster]['defnd']==second_key:
-                                temp_fitness = temp_fitness - 0.1*dictofcarnivore[tempmonster]['Species_energy'] # being pushed out
+                                temp_fitness = temp_fitness - 0.1*size_factor*dictofcarnivore[tempmonster]['Species_energy'] # being pushed out
                             elif dictofcarnivore[tempmonster]['defnd']==third_key:
-                                temp_fitness = temp_fitness + 0.1*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
-                            else: temp_fitness = temp_fitness +0.01*dictofcarnivore[tempmonster]['Species_energy'] #+1 against null skills
+                                temp_fitness = temp_fitness + 0.1*size_factor*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                            else: temp_fitness = temp_fitness +0.01*size_factor*dictofcarnivore[tempmonster]['Species_energy'] #+1 against null skills
                 #END checking and scoring predi on other preditors
                 
                         
@@ -270,13 +274,13 @@ def evaluate_carnivores(dictofcarnivore):
 def evaluate_prey_size(size, prey_size):
     #cases - can eat normally down two or up 1 size.
     
-    if size-2>=prey_size>=size+1:
+    if size-2<=prey_size<=size+1:
         factor=1.0
         return(factor)
     elif size>prey_size:
         factor =0.1*prey_size/size
         return(factor)
-    elif size<preysize:
+    elif size<prey_size:
         factor = 0.1*size/prey_size
         return(factor)
         
