@@ -1,0 +1,43 @@
+import random
+
+#rather than think, results for rolling a 1 go in asingled10[1] ect
+
+asingled10 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+distroMAX2d10 = asingled10
+distroMIN2d10 = asingled10
+DistroSUM2d6 = asingled10
+
+
+for x in range(0,1000000):
+    dice1 = random.randint(1,6)
+    dice2 = random.randint(1,6)
+    dice3 = random.randint(1,2)-1
+    dice4 = random.randint(1,2)-1
+    dice5 = random.randint(1,2)-1
+    dice6 = random.randint(1,2)-1
+    dice7 = random.randint(1,2)-1
+    dice8 = random.randint(1,2)-1
+
+    setof2dice = [dice1,dice2]
+    setof3dice = [dice1,dice2,dice3]
+    setof4dice = [dice1,dice2,dice3,dice4]
+    setof5dice = [dice1,dice2,dice3,dice4, dice5]
+    setof8dice = [dice1,dice2,dice3,dice4,dice5,dice6,dice7,dice8]
+
+#    print(distroMAX2d10)
+#    print(distroMAX2d10[max(setof2dice)])
+   # distroMAX2d10[max(setof2dice)]=distroMAX2d10[max(setof2dice)]+1
+    #distroMIN2d10[min(setof2dice)]=distroMIN2d10[min(setof2dice)]+1
+    temp=sum(setof2dice)
+    if temp >9: temp=temp-9
+    DistroSUM2d6[temp]=DistroSUM2d6[temp]+1
+    
+    #print(setof2dice, max(setof2dice))
+#    print(distroMAX2d10[max(setof2dice)])
+    
+#print(distroMAX2d10)
+print(DistroSUM2d6)
+#print('---')
+#print(distroMIN2d10)
+      
+
