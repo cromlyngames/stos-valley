@@ -4,13 +4,11 @@ import random
 #generates a feeding matrix to see who eats what
 #scores everything (rock paper scissors). allocates enenergy. adds a mutated creature, repeats. 
 
-#TODO - get size effects into carnivore evaluation.
+#TODO - get size effects into carnivore evaluation. - done,. I think
 #TODO - fix final evaluation stage. Cull and evaluate back each dictionary until they are the right length
 
-#todo - incorp looped carni and herib behaviour
-#  flee from danger - beaten by endurance hunter
-# defend aggresivley - beaten by killer charge hunter
-# sense and avoid - beaten by ambush hunter
+#todo - incorp looped carni and herib behaviour into evaluation
+#update behave and size desciriptions to something else inside compi, defnd and predi tables
 
 #generic beat is shaped like:
 #this_producer={
@@ -36,7 +34,7 @@ Herbi_eater_behav = { 'RK': 'Flee from danger',             'PA': 'Defend aggres
 Meati_eater_compi = { 'PA': ' Climber/flyer/burower',       'SC': 'Larger',                 'RK': 'Thick hide/shell '}
 Meati_eater_predi = { 'PA': 'Crushing bite/pounce/squeeze', 'SC': 'Ambush/camouflage',      'RK': 'Venomous strike'}
 Meati_eater_defnd = { 'PA': 'Nomadic',                      'SC': 'Territorial',            'RK': 'Pack hunters'}
-Meati_eater_behav = { 'PA': 'endurance chaser',             'SC': 'killer charger'          'RK': 'stealthy ambush'}
+Meati_eater_behav = { 'PA': 'endurance chaser',             'SC': 'killer charger',          'RK': 'stealthy ambush'}
 
 dictofdicts ={
     'Light_eater_compi':    Light_eater_compi,
@@ -75,17 +73,17 @@ incoming_chem =1000
 incoming_magic =1000
 incoming_detritus=1000
 
-Number_producers =5
-Number_herbivores = 3
-Number_carnivores = 3
+Number_producers =7
+Number_herbivores = 5
+Number_carnivores = 5
 
 EntryCounters={
-    'Light_counter':100,
-    'Chem_counter' :200,
-    'Magic_counter':300,
-    'Detri_counter':400,
-    'Herbivore_counter':500,
-    'Carnivore_counter':600
+    'Light_counter':10000,
+    'Chem_counter' :20000,
+    'Magic_counter':30000,
+    'Detri_counter':40000,
+    'Herbivore_counter':50000,
+    'Carnivore_counter':60000
     }
 
 #this function creates a random type of generic skill.
@@ -147,7 +145,7 @@ def Create_Producer(EntryCounters):
     else: defnd_type='--'
 
     Species_energy = 100    #intilaises everyone the same starting energy.
-    this_producer={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':'--', 'defnd':defnd_type}
+    this_producer={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':'--', 'defnd':defnd_type,'Size':' ', 'Prey_size':' '}
     return(this_producer,EntryCounters)   
 
 #create a new Herbivore
@@ -167,7 +165,7 @@ def Create_Herbivore(EntryCounters):
      
     Size = Create_size()
     Species_energy = 100    #intilaises everyone the same starting energy.
-    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'Size':Size}
+    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'Size':Size, 'Prey_size':' '}
     return(this_beast,EntryCounters) 
 
 
@@ -201,6 +199,19 @@ def evaluate_carnivores(dictofcarnivore):
     for mainmonster in dictofcarnivore:
         temp_fitness = 1 #assumes all equally fit
         listofcodes=['RK','PA', 'SC','RK','PA', 'SC','RK'] 
+
+        #first run through all v all and assign energy based on size and target size alone
+        #do this outside the rock,paper scissor loop to conserve loops
+        size = dictofcarnivore[mainmonster]['Prey_size']
+        for tempmonster in dictofherbivore:
+            prey_size = dictofherbivore[tempmonster]['Size']                              
+            size_factor = evaluate_prey_size(size, prey_size) # measures how good the carnivore would be at catching the herbivore
+            temp_fitness= temp_fitness +size_factor*dictofherbivore[tempmonster]['Species_energy']
+
+        for tempmonster in dictofcarnivore:
+            prey_size = dictofcarnivore[tempmonster]['Size']
+            size_factor = evaluate_prey_size(size, prey_size)
+            temp_fitness= temp_fitness +size_factor*dictofcarnivore[tempmonster]['Species_energy']
             
         for i in range (0,3):
             first_key=listofcodes[i]
@@ -482,7 +493,7 @@ def cull_weakest(dictoflivingthings):
     #this removes any species with the least energy in that dict.
     dolt2 =dictoflivingthings #shortened to dolt2 here to save typing
     #tempvalue=list(dolt2.keys())[0]  #creates a list of the keys and returns the first. The list order is based on the semi-arbitary dictonary order. all that matters is a value is chosen
-    weakest={'Species_energy':10000}  #initalise with an arbitary weakest monster
+    weakest={'Species_energy':10000000}  #initalise with an arbitary weakest monster
     dolt2['weakest']=weakest
     for thing in dolt2:
         if dolt2[thing]['Species_energy']<dolt2['weakest']['Species_energy']:
@@ -504,13 +515,13 @@ def removekey(d, key):
 ########################################
 
 def print_roughly(livingthing):
-    print(livingthing['name'],livingthing['compi'],livingthing['defnd'],livingthing['predi'],'  ', livingthing['fitness'], livingthing['Species_energy'])
+    print(livingthing['name'],'  ',livingthing['Size'], livingthing ['Prey_size'], livingthing['compi'],livingthing['defnd'],livingthing['predi'],'  ', livingthing['fitness'], livingthing['Species_energy'])
     
 
 def print_nicely(livingthingname):
-    if 100 <livingthingname<499:
+    if 10000 <livingthingname<49999:
         dictofthings=dictofproducer
-    elif 500 <livingthingname <599:
+    elif 50000 <livingthingname <59999:
         dictofthings=dictofherbivore
     else: dictofthings=dictofcarnivore
     
@@ -564,14 +575,14 @@ dictofproducer={} #initialise dictionary
 dictofherbivore={} #initialise dictionary
 dictofcarnivore={} #initialise dictionary
 
-t1= EntryCounters['Light_counter']-100  
-t2= EntryCounters['Chem_counter']-200
-t3= EntryCounters['Magic_counter']-300
-t4= EntryCounters['Detri_counter']-400
+t1= EntryCounters['Light_counter']-10000  
+t2= EntryCounters['Chem_counter']-20000
+t3= EntryCounters['Magic_counter']-30000
+t4= EntryCounters['Detri_counter']-40000
 # sum total t1+t2+t3+t4 gives current number of producers
 CurrentNumberProducers=t1+t2+t3+t4
-CurrentNumberHerbivores = EntryCounters['Herbivore_counter']-500
-CurrentNumberCarnivores = EntryCounters['Carnivore_counter']-600
+CurrentNumberHerbivores = EntryCounters['Herbivore_counter']-50000
+CurrentNumberCarnivores = EntryCounters['Carnivore_counter']-60000
 
 
 
