@@ -74,8 +74,8 @@ incoming_magic =1000
 incoming_detritus=1000
 
 Number_producers =7
-Number_herbivores = 5
-Number_carnivores = 5
+Number_herbivores = 3
+Number_carnivores = 3
 
 EntryCounters={
     'Light_counter':10000,
@@ -150,7 +150,7 @@ def Create_Producer(EntryCounters):
 
 #create a new Herbivore
 def Create_Herbivore(EntryCounters):
-    EntryCounters['Herbivore_counter'] +=1
+    EntryCounters['Herbivore_counter'] =EntryCounters['Herbivore_counter']+1
     Name=EntryCounters['Herbivore_counter']
     Producer_type= 'Herbi_eater'
     if(random.randint(1,5)==1):
@@ -171,7 +171,7 @@ def Create_Herbivore(EntryCounters):
 
 #create a new Carnivore
 def Create_Carnivore(EntryCounters):
-    EntryCounters['Carnivore_counter'] +=1
+    EntryCounters['Carnivore_counter'] =EntryCounters['Carnivore_counter']+1
     Name=EntryCounters['Carnivore_counter']
     Producer_type= 'Meati_eater'
     if(random.randint(1,5)==1):
@@ -273,7 +273,7 @@ def evaluate_carnivores(dictofcarnivore):
         if temp_fitness < 0: temp_fitness=0
         total_fitness=total_fitness+temp_fitness
         dictofcarnivore[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
-        print_roughly(dictofcarnivore[mainmonster])
+        #print_roughly(dictofcarnivore[mainmonster])
         #END looping through all three for main monster. new monster!
       
     #END checking and scoring defence against predators
@@ -281,7 +281,7 @@ def evaluate_carnivores(dictofcarnivore):
 
     for mainmonster in dictofcarnivore:
         share_factor=dictofcarnivore[mainmonster]['fitness']/total_fitness
-        dictofcarnivore[mainmonster]['Species_energy']=total_carnivore_energy*share_factor
+        #dictofcarnivore[mainmonster]['Species_energy']=total_carnivore_energy*share_factor
     #    print_nicely(dictofherbivore[mainmonster])
                 
 def evaluate_prey_size(size, prey_size):
@@ -356,7 +356,7 @@ def evaluate_herbivores(dictofherbivore):
         if temp_fitness < 0: temp_fitness=0
         total_fitness=total_fitness+temp_fitness
         dictofherbivore[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
-        print_roughly(dictofherbivore[mainmonster])
+        #print_roughly(dictofherbivore[mainmonster])
         #END looping through all three for main monster. new monster!
       
     #END checking and scoring defence against predators
@@ -412,7 +412,7 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
         if temp_fitness < 0: temp_fitness=0
         total_fitness=total_fitness+temp_fitness
         dictofproducer[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
-        print_roughly(dictofproducer[mainmonster])
+        #print_roughly(dictofproducer[mainmonster])
         #END looping through all three for main monster. new monster!
       
     #END checking and scoring defence against predators
@@ -458,7 +458,16 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
     
 ##############
 
-def refill_foodweb(EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores,  dictofproducer, dictofherbivore, dictofcarnivore):
+def count_monsters(dictofproducer, dictofherbivore, dictofcarnivore):
+    CurrentNumberProducers = len(dictofproducer)
+    CurrentNumberHerbivores = len(dictofherbivore)
+    CurrentNumberCarnivores = len(dictofcarnivore)
+    return(CurrentNumberProducers, CurrentNumberHerbivores, CurrentNumberCarnivores)
+
+##############
+
+def refill_foodweb(EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores,
+                   dictofproducer, dictofherbivore, dictofcarnivore):
     for i in range(CurrentNumberProducers, Number_producers,1):
         temp, EntryCounters=Create_Producer(EntryCounters)
         tempname=temp['name']
@@ -581,6 +590,7 @@ t3= EntryCounters['Magic_counter']-30000
 t4= EntryCounters['Detri_counter']-40000
 # sum total t1+t2+t3+t4 gives current number of producers
 CurrentNumberProducers=t1+t2+t3+t4
+print(len(dictofproducer),  CurrentNumberProducers)
 CurrentNumberHerbivores = EntryCounters['Herbivore_counter']-50000
 CurrentNumberCarnivores = EntryCounters['Carnivore_counter']-60000
 
@@ -605,6 +615,7 @@ for i in range(CurrentNumberCarnivores, Number_carnivores,1):
     tempname=temp['name']
     dictofcarnivore[tempname]=temp  #adds producer to dictionary
 
+CurrentNumberProducers, CurrentNumberHerbivores, CurrentNumberCarnivores = count_monsters(dictofproducer, dictofherbivore, dictofcarnivore)
 
 for x in range(0,4):
     #prunes the zero's out. evalutes until stable, cull's weakest. refills's foodweb. evals, prunes and repeats
@@ -621,11 +632,16 @@ for x in range(0,4):
     dictofherbivore = cull_weakest(dictofherbivore)
     dictofcarnivore = cull_weakest(dictofcarnivore)
 
+    print(len(dictofherbivore),  CurrentNumberHerbivores)
     EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores, dictofproducer, dictofherbivore, dictofcarnivore = refill_foodweb(EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores,  dictofproducer, dictofherbivore, dictofcarnivore)
-
+    print('refilling foodweb')
+    print(len(dictofherbivore),  CurrentNumberHerbivores)
+    
     dictofproducer, total_herbivore_energy, total_carnivore_energy = evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_energy)
     evaluate_herbivores(dictofherbivore)
     evaluate_carnivores(dictofcarnivore)
+
+
 
 for x in range(0,4):
     #final evaluation set to produce good foodweb.
