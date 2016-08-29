@@ -73,9 +73,9 @@ incoming_chem =1000
 incoming_magic =1000
 incoming_detritus=1000
 
-Number_producers =7
-Number_herbivores = 5
-Number_carnivores = 5
+Number_producers =  2
+Number_herbivores = 2
+Number_carnivores = 2
 
 EntryCounters={
     'Light_counter':10000,
@@ -108,7 +108,7 @@ def Create_Producer_type(EntryCounters):
     Temp_value= random.randint(1,total_energy)
     if(Temp_value < incoming_light):
         Producer_type='Light_eater'
-        EntryCounters['Light_counter'] +=1 #increments it by one
+        EntryCounters['Light_counter'] = EntryCounters['Light_counter'] +1
         Name= EntryCounters['Light_counter']
         return(Producer_type, EntryCounters, Name)
     else:
@@ -116,7 +116,7 @@ def Create_Producer_type(EntryCounters):
 
     if(Temp_value < incoming_chem):
         Producer_type='Chem_eater'
-        EntryCounters['Chem_counter'] +=1 #increments it by one
+        EntryCounters['Chem_counter'] = EntryCounters['Chem_counter'] +1
         Name= EntryCounters['Chem_counter']
         return(Producer_type, EntryCounters, Name)
     else:
@@ -124,12 +124,12 @@ def Create_Producer_type(EntryCounters):
 
     if(Temp_value < incoming_magic):
         Producer_type='Magic_eater'
-        EntryCounters['Magic_counter'] +=1 #increments it by one
+        EntryCounters['Magic_counter'] = EntryCounters['Magic_counter']+1
         Name= EntryCounters['Magic_counter']
         return(Producer_type, EntryCounters, Name)
     else:
         Producer_type='Detri_eater'
-        EntryCounters['Detri_counter'] +=1 #increments it by one
+        EntryCounters['Detri_counter'] =EntryCounters['Detri_counter']+1
         Name= EntryCounters['Detri_counter']
         return(Producer_type, EntryCounters, Name)
         
@@ -458,24 +458,24 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
     
 ##############
 
-def refill_foodweb(EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores,  dictofproducer, dictofherbivore, dictofcarnivore):
-    for i in range(CurrentNumberProducers, Number_producers,1):
+def refill_foodweb(EntryCounters, dictofproducer, dictofherbivore, dictofcarnivore):
+    for i in range(len(dictofproducer), Number_producers,1):
         temp, EntryCounters=Create_Producer(EntryCounters)
         tempname=temp['name']
         dictofproducer[tempname]=temp  #adds producer to dictionary
         #print(dictofproducer)
 
-    for i in range(CurrentNumberHerbivores, Number_herbivores,1):
+    for i in range(len(dictofherbivore), Number_herbivores,1):
         temp, EntryCounters=Create_Herbivore(EntryCounters)
         tempname=temp['name']
         dictofherbivore[tempname]=temp  #adds producer to dictionary
 
 
-    for i in range(CurrentNumberCarnivores, Number_carnivores,1):
+    for i in range(len(dictofcarnivore), Number_carnivores,1):
         temp, EntryCounters=Create_Carnivore(EntryCounters)
         tempname=temp['name']
         dictofcarnivore[tempname]=temp  #adds producer to dictionary
-    return(EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores, dictofproducer, dictofherbivore, dictofcarnivore)
+    return(EntryCounters, dictofproducer, dictofherbivore, dictofcarnivore)
 
 
 
@@ -492,13 +492,12 @@ def prune_dictionary(dictoflivingthings):
 def cull_weakest(dictoflivingthings):
     #this removes any species with the least energy in that dict.
     dolt2 =dictoflivingthings #shortened to dolt2 here to save typing
-    #tempvalue=list(dolt2.keys())[0]  #creates a list of the keys and returns the first. The list order is based on the semi-arbitary dictonary order. all that matters is a value is chosen
     weakest={'Species_energy':10000000}  #initalise with an arbitary weakest monster
     dolt2['weakest']=weakest
     for thing in dolt2:
         if dolt2[thing]['Species_energy']<dolt2['weakest']['Species_energy']:
             dolt2['weakest'] = dolt2[thing]
-            print('new weakest: ', dolt2['weakest']['name'])
+            #print('new weakest: ', dolt2['weakest']['name'])
     
     dictoflivingthings = removekey(dictoflivingthings, dolt2['weakest']['name'])
     dictoflivingthings = removekey(dictoflivingthings, 'weakest')
@@ -617,11 +616,12 @@ for x in range(0,4):
         evaluate_herbivores(dictofherbivore)
         evaluate_carnivores(dictofcarnivore)
 
-    dictofproducer =cull_weakest(dictofherbivore)
-    dictofherbivore = cull_weakest(dictofherbivore)
-    dictofcarnivore = cull_weakest(dictofcarnivore)
+    
+    dictofproducer = cull_weakest(dictofproducer)
+    #dictofherbivore = cull_weakest(dictofherbivore)
+    #dictofcarnivore = cull_weakest(dictofcarnivore)
 
-    EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores, dictofproducer, dictofherbivore, dictofcarnivore = refill_foodweb(EntryCounters, CurrentNumberProducers,CurrentNumberHerbivores, CurrentNumberCarnivores,  dictofproducer, dictofherbivore, dictofcarnivore)
+    EntryCounters, dictofproducer, dictofherbivore, dictofcarnivore = refill_foodweb(EntryCounters, dictofproducer, dictofherbivore, dictofcarnivore)
 
     dictofproducer, total_herbivore_energy, total_carnivore_energy = evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_energy)
     evaluate_herbivores(dictofherbivore)
