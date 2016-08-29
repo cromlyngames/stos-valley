@@ -4,9 +4,6 @@ import random
 #generates a feeding matrix to see who eats what
 #scores everything (rock paper scissors). allocates enenergy. adds a mutated creature, repeats. 
 
-#TODO - get size effects into carnivore evaluation. - done,. I think
-#TODO - fix final evaluation stage. Cull and evaluate back each dictionary until they are the right length
-
 #todo - incorp looped carni and herib behaviour into evaluation
 #update behave and size desciriptions to something else inside compi, defnd and predi tables
 
@@ -35,6 +32,7 @@ Meati_eater_compi = { 'PA': ' Climber/flyer/burower',       'SC': 'Larger',     
 Meati_eater_predi = { 'PA': 'Crushing bite/pounce/squeeze', 'SC': 'Ambush/camouflage',      'RK': 'Venomous strike'}
 Meati_eater_defnd = { 'PA': 'Nomadic',                      'SC': 'Territorial',            'RK': 'Pack hunters'}
 Meati_eater_behav = { 'PA': 'endurance chaser',             'SC': 'killer charger',          'RK': 'stealthy ambush'}
+Meati_eater_defbehav = { 'PA': 'endurance chaser',             'SC': 'killer charger',          'RK': 'stealthy ambush'}
 
 dictofdicts ={
     'Light_eater_compi':    Light_eater_compi,
@@ -50,10 +48,13 @@ dictofdicts ={
     'Herbi_eater_compi':    Herbi_eater_compi,
     'Herbi_eater_predi':    Herbi_eater_predi,
     'Herbi_eater_defnd':    Herbi_eater_defnd,
+    'Herbi_eater_behav':    Herbi_eater_behav,
 
     'Meati_eater_compi':    Meati_eater_compi,
     'Meati_eater_predi':    Meati_eater_predi,
     'Meati_eater_defnd':    Meati_eater_defnd,
+    'Meati_eater_behav':    Meati_eater_behav,
+    'Meati_eater_defbehav': Meati_eater_defbehav,    
     }
 dictofseize ={
     1:'tiny, ant',
@@ -162,10 +163,14 @@ def Create_Herbivore(EntryCounters):
     if(random.randint(1,5)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
+
+    if(random.randint(1,5)==1):
+       behav_type=Create_skill()
+    else: behav_type='--'
      
     Size = Create_size()
     Species_energy = 100    #intilaises everyone the same starting energy.
-    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'Size':Size, 'Prey_size':' '}
+    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'behav':behav_type,'Size':Size, 'Prey_size':' '}
     return(this_beast,EntryCounters) 
 
 
@@ -184,11 +189,18 @@ def Create_Carnivore(EntryCounters):
        defnd_type=Create_skill()
     else: defnd_type='--'
 
+    if(random.randint(1,5)==1):
+       defbehav_type=Create_skill()
+    else: defbehav_type='--'  #defbav type defines how behaves when preyed upon themselves.
+    if(random.randint(1,5)==1):
+       behav_type=Create_skill()
+    else: behav_type='--'     # behav type defines how behaves when hunting another creature
+
     Size = Create_size()
     Prey_size = Create_size()
 
     Species_energy = 100    #intilaises everyone the same starting energy.
-    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'Size':Size, 'Prey_size':Prey_size}
+    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'defbehav':defbehav_type, 'behav':behav_type, 'Size':Size, 'Prey_size':Prey_size}
     return(this_beast,EntryCounters)
 
 def evaluate_carnivores(dictofcarnivore):
@@ -219,6 +231,7 @@ def evaluate_carnivores(dictofcarnivore):
             third_key=listofcodes[i+2]
             #print(first_key, second_key,third_key)
             if dictofcarnivore[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
+                #START checking and scoring compi
                 if dictofcarnivore[mainmonster]['compi']==first_key:
                     #print('first key', first_key)
                     for tempmonster in dictofcarnivore:
@@ -232,8 +245,6 @@ def evaluate_carnivores(dictofcarnivore):
                 #I am using the global variable for the different producers
                 #BECUASE this function only changes carnivores, not herbivores
             if dictofcarnivore[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
-
-# QUESTION: IF THE MAINMONSTER has a null skill for predi, how do they get fitness bonuses? bollocks. better add a 2nd loop that does the eating for a '--' predi
 
                 if dictofcarnivore[mainmonster]['predi']==first_key:
                     #print('first key', first_key)
@@ -264,8 +275,58 @@ def evaluate_carnivores(dictofcarnivore):
                                 temp_fitness = temp_fitness + 0.1*size_factor*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
                             else: temp_fitness = temp_fitness +0.01*size_factor*dictofcarnivore[tempmonster]['Species_energy'] #+1 against null skills
                 #END checking and scoring predi on other preditors
-                
-                        
+
+                #START checking and scoring behav on predator / herbivore interaction
+            if dictofcarnivore[mainmonster]['behav']!='--': # only needs to run loops if there is a skill to compare
+
+                if dictofcarnivore[mainmonster]['behav']==first_key:
+                    #print('first key', first_key)
+                    for tempmonster in dictofherbivore:
+                        size = dictofcarnivore[mainmonster]['Prey_size']
+                        prey_size = dictofherbivore[tempmonster]['Size']                              
+                        size_factor = evaluate_prey_size(size, prey_size) # measures how good the carnivore would be at catching the herbivore
+                        if dictofherbivore[tempmonster]['behav']==second_key:
+                            temp_fitness = temp_fitness - 0.1*size_factor*dictofherbivore[tempmonster]['Species_energy'] # being pushed out
+                        elif dictofherbivore[tempmonster]['behav']==third_key:
+                            temp_fitness = temp_fitness + 0.1*size_factor*dictofherbivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                        else: temp_fitness = temp_fitness +0.01*size_factor*dictofherbivore[tempmonster]['Species_energy'] #+1 against null skills
+
+                #END checking and scoring behav on predator/ herbivore interaction
+                # START checking behav when mainmonster is the predator and another predator the prey
+            if dictofcarnivore[mainmonster]['behav']!='--': # only needs to run loops if there is a skill to compare
+
+                if dictofcarnivore[mainmonster]['behav']==first_key:
+                    #print('first key', first_key)
+                    for tempmonster in dictofcarnivore:
+                        size = dictofcarnivore[mainmonster]['Prey_size']
+                        prey_size = dictofcarnivore[tempmonster]['Size']                              
+                        size_factor = evaluate_prey_size(size, prey_size) # measures how good the carnivore would be at catching the other predator
+                        if dictofcarnivore[tempmonster]!=dictofcarnivore[mainmonster]:  #no fitness bonus from cannibilism!
+                            if dictofcarnivore[tempmonster]['defbehav']==second_key:
+                                temp_fitness = temp_fitness - 0.1*size_factor*dictofcarnivore[tempmonster]['Species_energy'] # being pushed out
+                            elif dictofcarnivore[tempmonster]['defbehav']==third_key:
+                                temp_fitness = temp_fitness + 0.1*size_factor*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                            else: temp_fitness = temp_fitness +0.01*size_factor*dictofcarnivore[tempmonster]['Species_energy'] #+1 against null skills
+                 #END checking mainmonster as predator on the tempmonster.
+                # START checking when the tempmonset is predator using its behav against the mainmonster's defbehav
+
+            if dictofcarnivore[mainmonster]['defbehav']!='--': # only needs to run loops if there is a skill to compare
+
+                if dictofcarnivore[mainmonster]['defbehav']==first_key:
+                    #print('first key', first_key)
+                    for tempmonster in dictofcarnivore:
+                        size = dictofcarnivore[mainmonster]['Prey_size']
+                        prey_size = dictofcarnivore[tempmonster]['Size']                              
+                        size_factor = evaluate_prey_size(size, prey_size) # measures how good the carnivore would be at catching the other predator
+                        if dictofcarnivore[tempmonster]!=dictofcarnivore[mainmonster]:  #no fitness bonus from cannibilism!
+                            if dictofcarnivore[tempmonster]['behav']==second_key:
+                                temp_fitness = temp_fitness + 0.1*size_factor*dictofcarnivore[tempmonster]['Species_energy'] # being pushed out
+                                # CHANGE TO WETHER IT@S A PLUS OR A MINUS HERE!
+                            elif dictofcarnivore[tempmonster]['behav']==third_key:
+                                temp_fitness = temp_fitness - 0.1*size_factor*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                                # CHANGE TO WETHER IT@S A PLUS OR A MINUS HERE!
+                            else: temp_fitness = temp_fitness +0.01*size_factor*dictofcarnivore[tempmonster]['Species_energy'] #+1 against null skills
+
                 
             dictofcarnivore[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
                 
