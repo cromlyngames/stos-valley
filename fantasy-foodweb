@@ -4,8 +4,6 @@ import random
 #generates a feeding matrix to see who eats what
 #scores everything (rock paper scissors). allocates enenergy. adds a mutated creature, repeats. 
 
-#todo - incorp looped carni and herib behaviour into evaluation
-#update behave and size desciriptions to something else inside compi, defnd and predi tables
 
 #generic beat is shaped like:
 #this_producer={
@@ -14,25 +12,25 @@ import random
 # note that fitness is computed on the fly, and used to assign energy
 
 
-Light_eater_compi = { 'SC': 'Height',                       'RK': 'Entangling climber',     'PA': 'Symbitotic Defender '}
+Light_eater_compi = { 'SC': 'Quickly growing to full height','RK': 'Entangling climber',     'PA': 'Symbitotic Defender '}
 Chem_eater_compi = { 'SC': 'Multiple food types',           'RK': 'Colonisation ',          'PA': 'Extremophile'}
-Magic_eater_compi = { 'SC': 'Big',                          'RK': 'Magical Resivoirs',      'PA': 'Enviromental discharge'}
-Detri_eater_compi = { 'SC': 'Tendrils',                     'RK': 'Mobile life stage',      'PA': 'Digestive ooze'}
+Magic_eater_compi = { 'SC': 'Sprawling mass',               'RK': 'Magical Resivoirs in Roots/Stem/Spots',      'PA': 'Fire/Ice/Other Enviromental discharge'}
+Detri_eater_compi = { 'SC': 'Tendrils',                     'RK': 'Mobile life stage - maggots, flies or similar',      'PA': 'Digestive ooze'}
 Light_eater_defnd = { 'SC': 'Tall, high leaves',            'RK': 'Woody stems',            'PA': 'Sacrificial Fruits '}
 Chem_eater_defnd = { 'SC': 'Withdrawl reflex',              'RK': 'Heavy metal concentrate', 'PA': 'Stone skin'}
-Magic_eater_defnd = { 'SC': 'Floating/hiding/distracting',  'RK': ' Spines/thorns',         'PA': 'Regeneration'}
+Magic_eater_defnd = { 'SC': 'Floating/hiding/distracting',  'RK': 'Cursed Spines/thorns',    'PA': 'Regeneration'}
 Detri_eater_defnd = { 'SC': 'Deep roots',                   'RK': 'Brightly Poisonous',     'PA': 'Parasitic life stage'}
 
-Herbi_eater_compi = { 'RK': 'Rapid growth',                 'PA': 'Swarming',               'SC': 'Large'}
+Herbi_eater_compi = { 'RK': 'Rapid growth',                 'PA': 'Loud warning calls','SC': 'Dense and tough muscely body'}
 Herbi_eater_predi = { 'RK': 'Long neck/good climber/burrower', 'PA': 'Specialised gut',     'SC': 'Grinding maw/teeth/beak'}
 Herbi_eater_defnd = { 'RK': 'Horns/antlers/tusks/spikes',   'PA': 'Fast and nimble',        'SC': 'Keen senses'}
-Herbi_eater_behav = { 'RK': 'Flee from danger',             'PA': 'Defend aggresively',     'SC': 'Sense and avoid'}
+Herbi_eater_defbehav = { 'RK': 'Flee from danger',             'PA': 'Defend aggresively',     'SC': 'Sense and avoid'}
 
-Meati_eater_compi = { 'PA': ' Climber/flyer/burower',       'SC': 'Larger',                 'RK': 'Thick hide/shell '}
-Meati_eater_predi = { 'PA': 'Crushing bite/pounce/squeeze', 'SC': 'Ambush/camouflage',      'RK': 'Venomous strike'}
-Meati_eater_defnd = { 'PA': 'Nomadic',                      'SC': 'Territorial',            'RK': 'Pack hunters'}
-Meati_eater_behav = { 'PA': 'endurance chaser',             'SC': 'killer charger',          'RK': 'stealthy ambush'}
-Meati_eater_defbehav = { 'PA': 'endurance chaser',             'SC': 'killer charger',          'RK': 'stealthy ambush'}
+Meati_eater_compi = { 'PA': ' Climber/flyer/burower',       'SC': 'Extra long grappling limbs',    'RK': 'Thick hide/shell '}
+Meati_eater_predi = { 'PA': 'Crushing bite/pounce/squeeze', 'SC': 'stealthy camouflage',      'RK': 'Venomous strike'}
+Meati_eater_defnd = { 'PA': 'seasonally nomadic',            'SC': 'defends territory / or den',            'RK': 'will form larger packs when hungry'}
+Meati_eater_defbehav = { 'RK': 'flee from danger',             'PA': 'defend aggresively',     'SC': 'sense and avoid'}
+Meati_eater_behav = { 'PA': 'an endurance chaser',             'SC': 'a killer charger',          'RK': 'a stealthy ambusher'}
 
 dictofdicts ={
     'Light_eater_compi':    Light_eater_compi,
@@ -42,13 +40,13 @@ dictofdicts ={
 
     'Light_eater_defnd':    Light_eater_defnd,
     'Chem_eater_defnd':     Chem_eater_defnd,
-    'Magic_eater_defend':   Magic_eater_defnd,
-    'Detri_eater_compi':    Detri_eater_compi,
+    'Magic_eater_defnd':   Magic_eater_defnd,
+    'Detri_eater_defnd':    Detri_eater_defnd,
 
     'Herbi_eater_compi':    Herbi_eater_compi,
     'Herbi_eater_predi':    Herbi_eater_predi,
     'Herbi_eater_defnd':    Herbi_eater_defnd,
-    'Herbi_eater_behav':    Herbi_eater_behav,
+    'Herbi_eater_defbehav':    Herbi_eater_defbehav,
 
     'Meati_eater_compi':    Meati_eater_compi,
     'Meati_eater_predi':    Meati_eater_predi,
@@ -56,28 +54,28 @@ dictofdicts ={
     'Meati_eater_behav':    Meati_eater_behav,
     'Meati_eater_defbehav': Meati_eater_defbehav,    
     }
-dictofseize ={
-    1:'tiny, ant',
-    2:'small, rat',
-    3:'medium, fox',
-    4:'human sized',
-    5:'large, bear',
-    6:'big, horse',
-    7:'huge, T-Rex',  
-    8:'giant, diplodocus',
-    9:'leviathan, small hill' 
+dictofsize ={
+    'producer_1':'finger long, grass',
+    'producer_2':'hand size, potplant',
+    'producer_3':'knee high, bush',
+    'producer_4':'head height, large bush',
+    'producer_5':'2 men tall, fruit tree',
+    'producer_6':'4 men tall, large tree',
+    'producer_7':'6 men tall, mature tree',  
+    'producer_8':'giant, sequoia',
+    'producer_9':'leviathan, small hill',
+    'beast_1':'tiny, ant',
+    'beast_2':'small, rat',
+    'beast_3':'medium, fox',
+    'beast_4':'human',
+    'beast_5':'large, bear',
+    'beast_6':'big, rino',
+    'beast_7':'huge, T-Rex',  
+    'beast_8':'giant, diplodocus',
+    'beast_9':'leviathan, small hill' 
     }    
 
-#starter info. Later, this will be a inline input
-incoming_light = 1000
-incoming_chem =1000
-incoming_magic =1000
-incoming_detritus=1000
-
-Number_producers =  2
-Number_herbivores = 2
-Number_carnivores = 2
-
+#used to define the blocks where creature codenames begin:
 EntryCounters={
     'Light_counter':10000,
     'Chem_counter' :20000,
@@ -97,7 +95,7 @@ def Create_size():
     temp = random.randint(-1,9)
     for x in range (0,4):
         temp = temp + random.randint(-1,9) #gives nice normal distribution about 3.6
-    Size = int(abs(temp)) #makes sure size >0 and an nice integer
+    Size = int(abs(temp))+1 #makes sure size >0 and an nice integer
     while Size >9:
         Size=Size-9
         
@@ -138,15 +136,18 @@ def Create_Producer(EntryCounters):
     #Create_Producer_type could be merged into this function, but meh
     Producer_type, EntryCounters, Name= Create_Producer_type(EntryCounters)
     
-    if(random.randint(1,5)==1):
+    if(random.randint(1,skill_freq)==1):
        compi_type=Create_skill()
     else: compi_type='--'
-    if(random.randint(1,5)==1):
+    if(random.randint(1,skill_freq)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
 
+    Size = Create_size()
+    
     Species_energy = 100    #intilaises everyone the same starting energy.
-    this_producer={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':'--', 'defnd':defnd_type,'Size':' ', 'Prey_size':' '}
+    Number = 10
+    this_producer={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy, 'Number':Number,'compi':compi_type, 'predi':'--', 'defnd':defnd_type, 'behav':' ', 'defbehav': ' ', 'Size':Size, 'Prey_size':' '}
     return(this_producer,EntryCounters)   
 
 #create a new Herbivore
@@ -154,23 +155,24 @@ def Create_Herbivore(EntryCounters):
     EntryCounters['Herbivore_counter'] +=1
     Name=EntryCounters['Herbivore_counter']
     Producer_type= 'Herbi_eater'
-    if(random.randint(1,5)==1):
+    if(random.randint(1,skill_freq)==1):
        compi_type=Create_skill()
     else: compi_type='--'
-    if(random.randint(1,5)==1):
+    if(random.randint(1,skill_freq)==1):
        predi_type=Create_skill()
     else: predi_type='--'
-    if(random.randint(1,5)==1):
+    if(random.randint(1,skill_freq)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
 
-    if(random.randint(1,5)==1):
-       behav_type=Create_skill()
-    else: behav_type='--'
+    if(random.randint(1,1)==1):  # they all get a behav tag
+       defbehav_type=Create_skill()
+    else: defbehav_type='--'
      
     Size = Create_size()
     Species_energy = 100    #intilaises everyone the same starting energy.
-    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'behav':behav_type,'Size':Size, 'Prey_size':' '}
+    Number = 10
+    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'Number':Number,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'behav':' ', 'defbehav':defbehav_type,'Size':Size, 'Prey_size':' '}
     return(this_beast,EntryCounters) 
 
 
@@ -179,28 +181,31 @@ def Create_Carnivore(EntryCounters):
     EntryCounters['Carnivore_counter'] +=1
     Name=EntryCounters['Carnivore_counter']
     Producer_type= 'Meati_eater'
-    if(random.randint(1,5)==1):
+    if(random.randint(1,skill_freq)==1):
        compi_type=Create_skill()
     else: compi_type='--'
-    if(random.randint(1,5)==1):
+    if(random.randint(1,skill_freq)==1):
        predi_type=Create_skill()
     else: predi_type='--'
-    if(random.randint(1,5)==1):
+    if(random.randint(1,skill_freq)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
 
-    if(random.randint(1,5)==1):
+    if(random.randint(1,1)==1):   #they all get a defbehav tag
        defbehav_type=Create_skill()
     else: defbehav_type='--'  #defbav type defines how behaves when preyed upon themselves.
-    if(random.randint(1,5)==1):
+    if(random.randint(1,skill_freq)==1):
        behav_type=Create_skill()
     else: behav_type='--'     # behav type defines how behaves when hunting another creature
 
     Size = Create_size()
-    Prey_size = Create_size()
+    Prey_size = Size + random.randint(-2,2)+ random.randint(-2,2)+ random.randint(-2,2)+ random.randint(-2,2)
+    if Prey_size > 9: Prey_size=Prey_size-8
+    if Prey_size < 1: Prey_size=Size
 
     Species_energy = 100    #intilaises everyone the same starting energy.
-    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'defbehav':defbehav_type, 'behav':behav_type, 'Size':Size, 'Prey_size':Prey_size}
+    Number=10
+    this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'Number':Number,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'defbehav':defbehav_type, 'behav':behav_type, 'Size':Size, 'Prey_size':Prey_size}
     return(this_beast,EntryCounters)
 
 def evaluate_carnivores(dictofcarnivore):
@@ -229,7 +234,6 @@ def evaluate_carnivores(dictofcarnivore):
             first_key=listofcodes[i]
             second_key=listofcodes[i+1]
             third_key=listofcodes[i+2]
-            #print(first_key, second_key,third_key)
             if dictofcarnivore[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
                 #START checking and scoring compi
                 if dictofcarnivore[mainmonster]['compi']==first_key:
@@ -247,7 +251,6 @@ def evaluate_carnivores(dictofcarnivore):
             if dictofcarnivore[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
 
                 if dictofcarnivore[mainmonster]['predi']==first_key:
-                    #print('first key', first_key)
                     for tempmonster in dictofherbivore:
                         size = dictofcarnivore[mainmonster]['Prey_size']
                         prey_size = dictofherbivore[tempmonster]['Size']                              
@@ -263,7 +266,6 @@ def evaluate_carnivores(dictofcarnivore):
                 #BECUASE this function only changes carnivores, not herbivores
             if dictofcarnivore[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
                 if dictofcarnivore[mainmonster]['predi']==first_key:
-                    #print('first key', first_key)
                     for tempmonster in dictofcarnivore:
                         size = dictofcarnivore[mainmonster]['Prey_size']
                         prey_size = dictofcarnivore[tempmonster]['Size']                              
@@ -280,14 +282,13 @@ def evaluate_carnivores(dictofcarnivore):
             if dictofcarnivore[mainmonster]['behav']!='--': # only needs to run loops if there is a skill to compare
 
                 if dictofcarnivore[mainmonster]['behav']==first_key:
-                    #print('first key', first_key)
                     for tempmonster in dictofherbivore:
                         size = dictofcarnivore[mainmonster]['Prey_size']
                         prey_size = dictofherbivore[tempmonster]['Size']                              
                         size_factor = evaluate_prey_size(size, prey_size) # measures how good the carnivore would be at catching the herbivore
-                        if dictofherbivore[tempmonster]['behav']==second_key:
+                        if dictofherbivore[tempmonster]['defbehav']==second_key:
                             temp_fitness = temp_fitness - 0.1*size_factor*dictofherbivore[tempmonster]['Species_energy'] # being pushed out
-                        elif dictofherbivore[tempmonster]['behav']==third_key:
+                        elif dictofherbivore[tempmonster]['defbehav']==third_key:
                             temp_fitness = temp_fitness + 0.1*size_factor*dictofherbivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
                         else: temp_fitness = temp_fitness +0.01*size_factor*dictofherbivore[tempmonster]['Species_energy'] #+1 against null skills
 
@@ -296,7 +297,6 @@ def evaluate_carnivores(dictofcarnivore):
             if dictofcarnivore[mainmonster]['behav']!='--': # only needs to run loops if there is a skill to compare
 
                 if dictofcarnivore[mainmonster]['behav']==first_key:
-                    #print('first key', first_key)
                     for tempmonster in dictofcarnivore:
                         size = dictofcarnivore[mainmonster]['Prey_size']
                         prey_size = dictofcarnivore[tempmonster]['Size']                              
@@ -313,7 +313,6 @@ def evaluate_carnivores(dictofcarnivore):
             if dictofcarnivore[mainmonster]['defbehav']!='--': # only needs to run loops if there is a skill to compare
 
                 if dictofcarnivore[mainmonster]['defbehav']==first_key:
-                    #print('first key', first_key)
                     for tempmonster in dictofcarnivore:
                         size = dictofcarnivore[mainmonster]['Prey_size']
                         prey_size = dictofcarnivore[tempmonster]['Size']                              
@@ -333,22 +332,33 @@ def evaluate_carnivores(dictofcarnivore):
             #END looping through for 'RK' for main monster
         if temp_fitness < 0: temp_fitness=0
         total_fitness=total_fitness+temp_fitness
-        dictofcarnivore[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
-        print_roughly(dictofcarnivore[mainmonster])
+        dictofcarnivore[mainmonster]['fitness']=round(temp_fitness,2) #set this monster's fitness from compi
         #END looping through all three for main monster. new monster!
       
     #END checking and scoring defence against predators
-    print('total fitness', total_fitness)
+    if total_fitness == 0: total_fitness=1
+    print('Carnivores checked: total fitness', round(total_fitness,2))
 
     for mainmonster in dictofcarnivore:
         share_factor=dictofcarnivore[mainmonster]['fitness']/total_fitness
-        dictofcarnivore[mainmonster]['Species_energy']=total_carnivore_energy*share_factor
-    #    print_nicely(dictofherbivore[mainmonster])
-                
+        energy = round(total_carnivore_energy*share_factor,2)
+        size = dictofcarnivore[mainmonster]['Size']
+        packsize = evaluate_pack_size(size, dictofcarnivore[mainmonster]['Prey_size'])
+        dictofcarnivore[mainmonster]['Species_energy']=energy
+        dictofcarnivore[mainmonster]['Number'] = round(energy/(packsize*(size**3)),0)
+        if dictofcarnivore[mainmonster]['Number'] <1:
+            dictofcarnivore[mainmonster]['Species_energy']=0
+            print(dictofcarnivore[mainmonster]['name'], 'has died out')
+
+
+
+
+
+                    
 def evaluate_prey_size(size, prey_size):
     #cases - can eat normally down two or up 1 size.
     
-    if size-2<=prey_size<=size+1:
+    if size-1<=prey_size<=size+1:
         factor=1.0
         return(factor)
     elif size>prey_size:
@@ -357,7 +367,12 @@ def evaluate_prey_size(size, prey_size):
     elif size<prey_size:
         factor = 0.1*size/prey_size
         return(factor)
-        
+
+def evaluate_pack_size(size,preysize):
+    if size< preysize :
+        packsize = (preysize-size)**4
+    else: packsize=1
+    return(packsize)
 
 def evaluate_herbivores(dictofherbivore):
     #compi setting
@@ -374,10 +389,8 @@ def evaluate_herbivores(dictofherbivore):
             first_key=listofcodes[i]
             second_key=listofcodes[i+1]
             third_key=listofcodes[i+2]
-            #print(first_key, second_key,third_key)
             if dictofherbivore[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
                 if dictofherbivore[mainmonster]['compi']==first_key:
-                    #print('first key', first_key)
                     for tempmonster in dictofherbivore:
                         if dictofherbivore[tempmonster]['compi']==second_key:
                             temp_fitness = temp_fitness - 0.1*dictofherbivore[tempmonster]['Species_energy'] # being pushed out
@@ -391,7 +404,6 @@ def evaluate_herbivores(dictofherbivore):
                 #BECUASE this function only changes herbivores, not producers
             if dictofherbivore[mainmonster]['predi']!='--': # only needs to run loops if there is a skill to compare
                 if dictofherbivore[mainmonster]['predi']==first_key:
-                    #print('first key', first_key)
                     for tempmonster in dictofproducer:
                         if dictofproducer[tempmonster]['defnd']==second_key:
                             temp_fitness = temp_fitness - 0.1*dictofproducer[tempmonster]['Species_energy'] # being pushed out
@@ -403,11 +415,20 @@ def evaluate_herbivores(dictofherbivore):
                 #start checking and scoring defnd against carnivores
             if dictofherbivore[mainmonster]['defnd']!='--': # only needs to run loops if there is a skill to compare
                 if dictofherbivore[mainmonster]['defnd']==first_key:
-                    #print('first key', first_key)
                     for tempmonster in dictofcarnivore:
                         if dictofcarnivore[tempmonster]['predi']==second_key:
                             temp_fitness = temp_fitness - 0.1*dictofcarnivore[tempmonster]['Species_energy'] # being pushed out
                         elif dictofcarnivore[tempmonster]['predi']==third_key:
+                            temp_fitness = temp_fitness + 0.1*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
+                        else: temp_fitness = temp_fitness +0.01*dictofcarnivore[tempmonster]['Species_energy'] #+1 against null skills
+                #END checking defnd against carnivores
+                #START checking defbehav against carnivores
+            if dictofherbivore[mainmonster]['defbehav']!='--': # only needs to run loops if there is a skill to compare
+                if dictofherbivore[mainmonster]['defbehav']==first_key:
+                    for tempmonster in dictofcarnivore:
+                        if dictofcarnivore[tempmonster]['behav']==second_key:
+                            temp_fitness = temp_fitness - 0.1*dictofcarnivore[tempmonster]['Species_energy'] # being pushed out
+                        elif dictofcarnivore[tempmonster]['behav']==third_key:
                             temp_fitness = temp_fitness + 0.1*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
                         else: temp_fitness = temp_fitness +0.01*dictofcarnivore[tempmonster]['Species_energy'] #+1 against null skills
            
@@ -416,16 +437,25 @@ def evaluate_herbivores(dictofherbivore):
             #END looping through for 'RK' for main monster
         if temp_fitness < 0: temp_fitness=0
         total_fitness=total_fitness+temp_fitness
-        dictofherbivore[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
-        print_roughly(dictofherbivore[mainmonster])
+        dictofherbivore[mainmonster]['fitness']=round(temp_fitness,2) #set this monster's fitness from compi
+        #print_roughly(dictofherbivore[mainmonster])
         #END looping through all three for main monster. new monster!
       
     #END checking and scoring defence against predators
-    print('total fitness', total_fitness)
+    if total_fitness == 0: total_fitness=1
+    print('Herbivores Checked: total fitness', total_fitness)
 
     for mainmonster in dictofherbivore:
         share_factor=dictofherbivore[mainmonster]['fitness']/total_fitness
-        dictofherbivore[mainmonster]['Species_energy']=total_herbivore_energy*share_factor
+        energy = round(total_herbivore_energy*share_factor,2)
+        size = dictofherbivore[mainmonster]['Size']
+        dictofherbivore[mainmonster]['Species_energy']= energy
+        dictofherbivore[mainmonster]['Number']= round(energy/(size**3),0)
+        if dictofherbivore[mainmonster]['Number'] <1:
+            dictofherbivore[mainmonster]['Species_energy']=0
+            print(dictofherbivore[mainmonster]['name'], 'is dying out')
+
+                                                       
     #    print_nicely(dictofcarnivore[mainmonster])
 
 ##################
@@ -472,11 +502,12 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
             #END looping through for 'RK' for main monster
         if temp_fitness < 0: temp_fitness=0
         total_fitness=total_fitness+temp_fitness
-        dictofproducer[mainmonster]['fitness']=temp_fitness #set this monster's fitness from compi
-        print_roughly(dictofproducer[mainmonster])
+        dictofproducer[mainmonster]['fitness']=round(temp_fitness,2) #set this monster's fitness from compi
+        #print_roughly(dictofproducer[mainmonster])
         #END looping through all three for main monster. new monster!
       
     #END checking and scoring defence against predators
+    if total_fitness == 0: total_fitness=1
     print('total fitness', total_fitness)
 
     light_fitness=1  # seperate fitness totals needed for each source
@@ -501,16 +532,24 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
     for mainmonster in dictofproducer:
         if dictofproducer[mainmonster]['type']=='Light_eater':
             share_factor=dictofproducer[mainmonster]['fitness']/light_fitness
-            dictofproducer[mainmonster]['Species_energy']=incoming_light*share_factor
+            dictofproducer[mainmonster]['Species_energy']=round(incoming_light*share_factor,2)
         elif dictofproducer[mainmonster]['type']=='Chem_eater':
             share_factor=dictofproducer[mainmonster]['fitness']/chem_fitness
-            dictofproducer[mainmonster]['Species_energy']=incoming_chem*share_factor
+            dictofproducer[mainmonster]['Species_energy']=round(incoming_chem*share_factor,2)
         elif dictofproducer[mainmonster]['type']=='Magic_eater':
             share_factor=dictofproducer[mainmonster]['fitness']/magic_fitness
-            dictofproducer[mainmonster]['Species_energy']=incoming_magic*share_factor
+            dictofproducer[mainmonster]['Species_energy']=round(incoming_magic*share_factor,2)
         elif dictofproducer[mainmonster]['type']=='Detri_eater':
             share_factor=dictofproducer[mainmonster]['fitness']/detri_fitness
-            dictofproducer[mainmonster]['Species_energy']=incoming_detritus*share_factor
+            dictofproducer[mainmonster]['Species_energy']=round(incoming_detritus*share_factor,2)
+            
+        energy = dictofproducer[mainmonster]['Species_energy']
+        size = dictofproducer[mainmonster]['Size']
+        dictofproducer[mainmonster]['Number'] = round(energy/(size**3),0)
+        if dictofproducer[mainmonster]['Number'] <1:
+            dictofproducer[mainmonster]['Species_energy']=0
+            print(dictofproducer[mainmonster]['name'], 'has died out')
+        
         total_producer_energy=total_producer_energy+dictofproducer[mainmonster]['Species_energy']
     total_herbivore_energy = total_producer_energy/10
     total_carnivore_energy = total_producer_energy/100
@@ -575,8 +614,19 @@ def removekey(d, key):
 ########################################
 
 def print_roughly(livingthing):
-    print(livingthing['name'],'  ',livingthing['Size'], livingthing ['Prey_size'], livingthing['compi'],livingthing['defnd'],livingthing['predi'],'  ', livingthing['fitness'], livingthing['Species_energy'])
-    
+    print(livingthing['name'],'  ',livingthing['Number'], livingthing['Size'], livingthing ['Prey_size'],
+          livingthing['compi'],livingthing['defnd'],livingthing['predi'], livingthing['behav'], livingthing['defbehav'],  
+          livingthing['fitness'], livingthing['Species_energy'])
+
+def print_all():
+    for producer in dictofproducer:
+        print_nicely(producer)
+    print()
+    for beast in dictofherbivore:
+        print_nicely(beast)
+    print()
+    for beast in dictofcarnivore:
+        print_nicely(beast)
 
 def print_nicely(livingthingname):
     if 10000 <livingthingname<49999:
@@ -591,39 +641,122 @@ def print_nicely(livingthingname):
     Broad_compi=livingthing['compi']
     Broad_predi=livingthing['predi']
     Broad_defnd=livingthing['defnd']
+    Broad_defbehav = livingthing['defbehav']
+    Broad_behav = livingthing['behav']
+    Broad_size =livingthing['Size']
+    Broad_preysize = livingthing['Prey_size']
+    Number = int(livingthing['Number'])
     #now, lets look up what the SC, RK PA codes mean for each case
-    if(Broad_compi=='--'):
-        Det_compi=''
-    else:
-        smalldictkey=Broad_type+'_compi'
-        smalldict=dictofdicts[smalldictkey]
-        Det_compi=smalldict[Broad_compi]
+    if Number >1:
+        if(Broad_compi=='--'):
+            Det_compi=''
+        else:
+            smalldictkey=Broad_type+'_compi'
+            smalldict=dictofdicts[smalldictkey]
+            Det_compi=smalldict[Broad_compi]
 
-    if(Broad_predi=='--'):
-        Det_predi=''
-    else:
-        smalldictkey=Broad_type+'_predi'
-        smalldict=dictofdicts[smalldictkey]
-        Det_predi=smalldict[Broad_predi]
+        if(Broad_predi=='--'):
+            Det_predi=''
+        else:
+            smalldictkey=Broad_type+'_predi'
+            smalldict=dictofdicts[smalldictkey]
+            Det_predi=smalldict[Broad_predi]
 
-    if(Broad_defnd=='--'):
-        Det_defnd=''
-    else:
-        smalldictkey=Broad_type+'_defnd'
-        smalldict=dictofdicts[smalldictkey]
-        Det_defnd=smalldict[Broad_defnd]
-    if(Det_compi+Det_predi+Det_defnd==''):
-        final_word='nothing'
-    else: final_word=''
+        if(Broad_defnd=='--'):
+            Det_defnd=''
+        else:
+            smalldictkey=Broad_type+'_defnd'
+            smalldict=dictofdicts[smalldictkey]
+            Det_defnd=smalldict[Broad_defnd]        
+        if(Det_compi+Det_predi+Det_defnd==''):
+            final_word='nothing'
+        else: final_word=''
+
+        print('The {0} {1} is noted for {2}, {3}, {4}, {5}.'.format(Broad_type,livingthing['name'],Det_compi,Det_predi,Det_defnd,final_word))
+
+        if(Broad_type !='Meati_eater'):
+            if(Broad_type == 'Herbi_eater'):
+                tempkey = 'beast_'+str(Broad_size)
+                det_size = dictofsize[tempkey]
+                print(' There are ', Number, 'of these ', det_size, ' sized browsers in the area')
+            else:
+                tempkey = 'producer_'+str(Broad_size)
+                det_size = dictofsize[tempkey]
+                print('There are ', Number, 'of these', det_size, ' sized growths in the area')
+        else:
+            tempkey1= 'beast_'+str(Broad_size)
+            tempkey2='beast_'+str(Broad_preysize)
+            det_size = dictofsize[tempkey1]
+            det_preysize = dictofsize[tempkey2]
+            print('It is ', det_size, 'sized with a preffered prey of ', det_preysize, 'size')
+            if int(Broad_size)+1<int(Broad_preysize):
+                packsize = evaluate_pack_size(Broad_size, Broad_preysize)
+                print('It rarely found in packs of less than ', packsize, 'individuals. There are ', int(Number), 'of these packs in the area.')
+            else: print('There are ', Number, ' of these typically lone predators in the area')
+                
+        if(Broad_defbehav in {'RK','PA','SC'}):
+            smalldictkey=Broad_type+'_defbehav'
+            smalldict=dictofdicts[smalldictkey]
+            Det_defbehav=smalldict[Broad_defbehav]
+            print('when threatened it will ', Det_defbehav)
+
+        if(Broad_behav in {'RK','PA','SC'}):
+            smalldictkey=Broad_type+'_behav'
+            smalldict=dictofdicts[smalldictkey]
+            Det_behav=smalldict[Broad_behav]
+            print('when hunting it is ', Det_behav)    
+            
+        #    print('it has a current fitness score of {0} leading to total species energy of {1}.'.format(livingthing['fitness'],livingthing['Species_energy']))
+            #print('It eats mostly {0}.'.format(livingthing[first_choice_food]))
+
+
+def startup_data():
+    Nprod = input('Please enter the target number of producers (default 5)')
+    Nprod = startup_data_cleanse(Nprod,5)
+    Nherb = input('Please enter the target number of herbivores (default 3)')
+    Nherb = startup_data_cleanse(Nherb,3)
+    Ncarn = input('Please enter the target number of carnivores (default 3)')
+    Ncarn = startup_data_cleanse(Ncarn,3)
+
+    print("now enter the energy entering the ecosystem. This effects type of producer only")
+    print("You will get about 6 fox size predators per 10k energy entering the system")
+    print("Example - Enchanted Forest: Light =20000, Magic = 10000, Chem=0, Detri=200")
+    print("Example - Vents and Caves: Light=0, Magic =0, Chem =10000, Detri=10000")
+    Nlight = input('light =')
+    Nlight = startup_data_cleanse(Nlight,0)
+    Nmagic = input('magical energy =')
+    Nmagic = startup_data_cleanse(Nmagic,0)
+    Nchem = input('chemical energy =')
+    Nchem = startup_data_cleanse(Nchem,0)
+    Ndetri = input('detritus energy =')
+    Ndetri = startup_data_cleanse(Ndetri,0)
+
+    return(Nlight,Nmagic,Nchem,Ndetri,
+           Nprod,Nherb, Ncarn)
+
+
+
     
-    print('The {0} {1} is noted for {2} {3} {4} {5}.'.format(Broad_type,livingthing['name'],Det_compi,Det_predi,Det_defnd,final_word))
-    print('it has a current fitness score of {0} leading to total species energy of {1}.'.format(livingthing['fitness'],livingthing['Species_energy']))
-    #print('It eats mostly {0}.'.format(livingthing[first_choice_food]))
-    # add something about it's size, popualtion size and species energy.
+def startup_data_cleanse(rawinput, defaultval):
+    try:
+        rawinput = int(rawinput)
+        if rawinput==0: rawinput = defaultval
+    except ValueError:
+        rawinput = defaultval
+    return(rawinput)
+
 
 ###########################################################
 # Start main body
 # the first digit of the three code is a 'type' marker
+
+skill_freq = 3 # 1= certain, 5 means most have 1-2
+
+#starter info. an inline input
+incoming_light, incoming_chem, incoming_magic, incoming_detritus, Number_producers, Number_herbivores, Number_carnivores = startup_data()
+
+
+
 
 #inital best guess. Reliable when lots of producers
 #will be corrected later, once you know how much energy is caputred
@@ -665,22 +798,31 @@ for i in range(CurrentNumberCarnivores, Number_carnivores,1):
     tempname=temp['name']
     dictofcarnivore[tempname]=temp  #adds producer to dictionary
 
+dictofproducer=prune_dictionary(dictofproducer)
+dictofherbivore=prune_dictionary(dictofherbivore)
+dictofcarnivore=prune_dictionary(dictofcarnivore)
 
-for x in range(0,4):
+i=1
+while i >0:
     #prunes the zero's out. evalutes until stable, cull's weakest. refills's foodweb. evals, prunes and repeats
-    dictofproducer=prune_dictionary(dictofproducer)
-    dictofherbivore=prune_dictionary(dictofherbivore)
-    dictofcarnivore=prune_dictionary(dictofcarnivore)
-
-    for x in range(0,4):
+    
+    EntryCounters, dictofproducer, dictofherbivore, dictofcarnivore = refill_foodweb(EntryCounters, dictofproducer, dictofherbivore, dictofcarnivore)
+    for x in range(0,3):
         dictofproducer, total_herbivore_energy, total_carnivore_energy = evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_energy)
         evaluate_herbivores(dictofherbivore)
         evaluate_carnivores(dictofcarnivore)
 
-    
-    dictofproducer = cull_weakest(dictofproducer)
-    #dictofherbivore = cull_weakest(dictofherbivore)
-    #dictofcarnivore = cull_weakest(dictofcarnivore)
+
+    dictofproducer=prune_dictionary(dictofproducer)
+    dictofherbivore=prune_dictionary(dictofherbivore)
+    dictofcarnivore=prune_dictionary(dictofcarnivore)
+
+    if len(dictofproducer)>1 and len(dictofproducer)> Number_producers-3:
+        dictofproducer = cull_weakest(dictofproducer)
+    if len(dictofherbivore)>1 and len(dictofherbivore)> Number_herbivores-3:
+        dictofherbivore = cull_weakest(dictofherbivore)
+    if len(dictofcarnivore)>1 and len(dictofcarnivore)> Number_carnivores-3:
+        dictofcarnivore = cull_weakest(dictofcarnivore)
 
     EntryCounters, dictofproducer, dictofherbivore, dictofcarnivore = refill_foodweb(EntryCounters, dictofproducer, dictofherbivore, dictofcarnivore)
 
@@ -688,19 +830,21 @@ for x in range(0,4):
     evaluate_herbivores(dictofherbivore)
     evaluate_carnivores(dictofcarnivore)
 
-for x in range(0,4):
-    #final evaluation set to produce good foodweb.
-    
     dictofproducer=prune_dictionary(dictofproducer)
     dictofherbivore=prune_dictionary(dictofherbivore)
     dictofcarnivore=prune_dictionary(dictofcarnivore)
-   
+
+    i=Number_producers-len(dictofproducer) + Number_herbivores-len(dictofherbivore)+Number_carnivores-len(dictofcarnivore)
+
+for x in range(0,3):
+    #final evaluation set to produce good foodweb.
+    
     dictofproducer, total_herbivore_energy, total_carnivore_energy = evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_energy)
     evaluate_herbivores(dictofherbivore)
     evaluate_carnivores(dictofcarnivore)
     
 
-
+print_all()
     
 
     #print_nicely(temp)
