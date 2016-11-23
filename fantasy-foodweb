@@ -2,7 +2,8 @@ import random
 
 #The intention is, given inputs, generate a set of animals and some skills
 #generates a feeding matrix to see who eats what
-#scores everything (rock paper scissors). allocates enenergy. adds a mutated creature, repeats. 
+#scores everything (rock paper scissors). allocates enenergy.
+#adds a mutated creature, repeats. 
 
 
 #generic beat is shaped like:
@@ -12,25 +13,53 @@ import random
 # note that fitness is computed on the fly, and used to assign energy
 
 
-Light_eater_compi = { 'SC': 'Quickly growing to full height','RK': 'Entangling climber',     'PA': 'Symbitotic Defender '}
+
+###########################################
+## lookup Dictionarys of fun output text ##
+
+Light_eater_compi = { 'SC': 'Quickly growing to full height','RK': 'Entangling climber',     'PA': 'Symbiotic Defender '}
 Chem_eater_compi = { 'SC': 'Multiple food types',           'RK': 'Colonisation ',          'PA': 'Extremophile'}
-Magic_eater_compi = { 'SC': 'Sprawling mass',               'RK': 'Magical Resivoirs in Roots/Stem/Spots',      'PA': 'Fire/Ice/Other Enviromental discharge'}
+Magic_eater_compi = { 'SC': 'Sprawling mass',               'RK': 'Magical Reservoirs in Roots/Stem/Spots',      'PA': 'Fire/Ice/Other Environmental discharge'}
 Detri_eater_compi = { 'SC': 'Tendrils',                     'RK': 'Mobile life stage - maggots, flies or similar',      'PA': 'Digestive ooze'}
 Light_eater_defnd = { 'SC': 'Tall, high leaves',            'RK': 'Woody stems',            'PA': 'Sacrificial Fruits '}
-Chem_eater_defnd = { 'SC': 'Withdrawl reflex',              'RK': 'Heavy metal concentrate', 'PA': 'Stone skin'}
+Chem_eater_defnd = { 'SC': 'Withdrawal reflex',              'RK': 'Heavy metal concentrate', 'PA': 'Stone skin'}
 Magic_eater_defnd = { 'SC': 'Floating/hiding/distracting',  'RK': 'Cursed Spines/thorns',    'PA': 'Regeneration'}
 Detri_eater_defnd = { 'SC': 'Deep roots',                   'RK': 'Brightly Poisonous',     'PA': 'Parasitic life stage'}
 
-Herbi_eater_compi = { 'RK': 'Rapid growth',                 'PA': 'Loud warning calls','SC': 'Dense and tough muscely body'}
+Herbi_eater_compi = { 'RK': 'Rapid growth',                 'PA': 'Loud warning calls','SC': 'Dense and tough muscly  body'}
 Herbi_eater_predi = { 'RK': 'Long neck/good climber/burrower', 'PA': 'Specialised gut',     'SC': 'Grinding maw/teeth/beak'}
 Herbi_eater_defnd = { 'RK': 'Horns/antlers/tusks/spikes',   'PA': 'Fast and nimble',        'SC': 'Keen senses'}
-Herbi_eater_defbehav = { 'RK': 'Flee from danger',             'PA': 'Defend aggresively',     'SC': 'Sense and avoid'}
+Herbi_eater_defbehav = { 'RK': 'Flee from danger',             'PA': 'Defend aggressively',     'SC': 'Sense and avoid'}
 
-Meati_eater_compi = { 'PA': ' Climber/flyer/burower',       'SC': 'Extra long grappling limbs',    'RK': 'Thick hide/shell '}
+Meati_eater_compi = { 'PA': ' Climber/flyer/burrower',       'SC': 'Extra long grappling limbs',    'RK': 'Thick hide/shell '}
 Meati_eater_predi = { 'PA': 'Crushing bite/pounce/squeeze', 'SC': 'stealthy camouflage',      'RK': 'Venomous strike'}
 Meati_eater_defnd = { 'PA': 'seasonally nomadic',            'SC': 'defends territory / or den',            'RK': 'will form larger packs when hungry'}
-Meati_eater_defbehav = { 'RK': 'flee from danger',             'PA': 'defend aggresively',     'SC': 'sense and avoid'}
+Meati_eater_defbehav = { 'RK': 'flee from danger',             'PA': 'defend aggressively',     'SC': 'sense and avoid'}
 Meati_eater_behav = { 'PA': 'an endurance chaser',             'SC': 'a killer charger',          'RK': 'a stealthy ambusher'}
+
+dictofsize ={
+    'producer_1':'finger long, grass',
+    'producer_2':'hand size, potplant',
+    'producer_3':'knee high, bush',
+    'producer_4':'head height, large bush',
+    'producer_5':'2 men tall, fruit tree',
+    'producer_6':'4 men tall, large tree',
+    'producer_7':'6 men tall, mature tree',  
+    'producer_8':'giant, sequoia',
+    'producer_9':'leviathan, small hill',
+    'beast_1':'tiny, ant',
+    'beast_2':'small, rat',
+    'beast_3':'medium, fox',
+    'beast_4':'human',
+    'beast_5':'large, bear',
+    'beast_6':'big, rhino',
+    'beast_7':'huge, T-Rex',  
+    'beast_8':'giant, Diplodocus',
+    'beast_9':'leviathan, small hill' 
+    }    
+
+###########################################
+## Organiser dictonaries for data passing##
 
 dictofdicts ={
     'Light_eater_compi':    Light_eater_compi,
@@ -54,26 +83,7 @@ dictofdicts ={
     'Meati_eater_behav':    Meati_eater_behav,
     'Meati_eater_defbehav': Meati_eater_defbehav,    
     }
-dictofsize ={
-    'producer_1':'finger long, grass',
-    'producer_2':'hand size, potplant',
-    'producer_3':'knee high, bush',
-    'producer_4':'head height, large bush',
-    'producer_5':'2 men tall, fruit tree',
-    'producer_6':'4 men tall, large tree',
-    'producer_7':'6 men tall, mature tree',  
-    'producer_8':'giant, sequoia',
-    'producer_9':'leviathan, small hill',
-    'beast_1':'tiny, ant',
-    'beast_2':'small, rat',
-    'beast_3':'medium, fox',
-    'beast_4':'human',
-    'beast_5':'large, bear',
-    'beast_6':'big, rino',
-    'beast_7':'huge, T-Rex',  
-    'beast_8':'giant, diplodocus',
-    'beast_9':'leviathan, small hill' 
-    }    
+
 
 #used to define the blocks where creature codenames begin:
 EntryCounters={
@@ -84,6 +94,13 @@ EntryCounters={
     'Herbivore_counter':50000,
     'Carnivore_counter':60000
     }
+
+
+#######################################
+#######################################
+## Generate a new creature functions ##
+###########VVVVVVVVVVV#################
+##############VVVVV####################
 
 #this function creates a random type of generic skill.
 def Create_skill():
@@ -175,6 +192,31 @@ def Create_Herbivore(EntryCounters):
     this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'Number':Number,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'behav':' ', 'defbehav':defbehav_type,'Size':Size, 'Prey_size':' '}
     return(this_beast,EntryCounters) 
 
+# Create a new subspecies of herbivore # STILL WIP
+def Mutate_Herbivore(EntryCounters, parentname):
+    if 10000 <parentname<49999:
+        dictofthings=dictofproducer
+    elif 50000 <parentname <59999:
+        dictofthings=dictofherbivore
+    else: dictofthings=dictofcarnivore
+    
+
+    #create space for child in index
+    parent
+    child, EntryCounters =Create_Herbivore(EntryCounters)
+
+    #change child to match parent
+    child['compi']=parent['compi']
+    child['predi']=parent['predi']
+    child['defnd']=parent['defnd']
+    child['behav']=parent['behav']
+    child['defbehav']=parent['defbehav']
+    child['Size']=parent['Size']
+    child['Prey_size']=['Prey_size']
+    #set small child starter popualtion
+    child['Number']=1
+    child['Species_energy']=parent['Species_energy']/parent['Number']
+    
 
 #create a new Carnivore
 def Create_Carnivore(EntryCounters):
@@ -207,6 +249,12 @@ def Create_Carnivore(EntryCounters):
     Number=10
     this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'Number':Number,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'defbehav':defbehav_type, 'behav':behav_type, 'Size':Size, 'Prey_size':Prey_size}
     return(this_beast,EntryCounters)
+
+############################
+############################
+##  Evaluation functions  ##
+#########VVVVVVVVVVV########
+#############VVVV###########
 
 def evaluate_carnivores(dictofcarnivore):
     #calculate the total energy available at this trophic level
@@ -350,10 +398,6 @@ def evaluate_carnivores(dictofcarnivore):
             dictofcarnivore[mainmonster]['Species_energy']=0
             print(dictofcarnivore[mainmonster]['name'], 'has died out')
 
-
-
-
-
                     
 def evaluate_prey_size(size, prey_size):
     #cases - can eat normally down two or up 1 size.
@@ -370,7 +414,7 @@ def evaluate_prey_size(size, prey_size):
 
 def evaluate_pack_size(size,preysize):
     if size< preysize :
-        packsize = (preysize-size)**4
+        packsize = (preysize-size+1)**4
     else: packsize=1
     return(packsize)
 
@@ -578,8 +622,11 @@ def refill_foodweb(EntryCounters, dictofproducer, dictofherbivore, dictofcarnivo
     return(EntryCounters, dictofproducer, dictofherbivore, dictofcarnivore)
 
 
-
-######################################################
+#####################################
+#####################################
+####    darwinian functions     #####
+############VV########VV#############
+############VV########VV#############
 
 def prune_dictionary(dictoflivingthings):
     # this removes any species who's energy has fallen to zero - ie gone extinct
@@ -611,9 +658,20 @@ def removekey(d, key):
     del r[key]
     return r
 
-########################################
+#######################
+#######################
+#  Output Functions  #
+#######VVVVVVVVVV######
+##########VVVV#########
 
-def print_roughly(livingthing):
+def print_roughly(livingthingname): # used for testing at command line more than anything
+    if 10000 <livingthingname<49999:
+        dictofthings=dictofproducer
+    elif 50000 <livingthingname <59999:
+        dictofthings=dictofherbivore
+    else: dictofthings=dictofcarnivore
+    
+    livingthing=dictofthings[livingthingname]
     print(livingthing['name'],'  ',livingthing['Number'], livingthing['Size'], livingthing ['Prey_size'],
           livingthing['compi'],livingthing['defnd'],livingthing['predi'], livingthing['behav'], livingthing['defbehav'],  
           livingthing['fitness'], livingthing['Species_energy'])
@@ -636,7 +694,7 @@ def print_nicely(livingthingname):
     else: dictofthings=dictofcarnivore
     
     livingthing=dictofthings[livingthingname]
-    #print('{0} and {1}'.format('spam', 'eggs'))
+    #Pull out info that needs refining from that creatures entry
     Broad_type=livingthing['type']
     Broad_compi=livingthing['compi']
     Broad_predi=livingthing['predi']
@@ -647,7 +705,10 @@ def print_nicely(livingthingname):
     Broad_preysize = livingthing['Prey_size']
     Number = int(livingthing['Number'])
     #now, lets look up what the SC, RK PA codes mean for each case
-    if Number >1:
+
+# First line of output
+# The Creature is noted for X, Y ,Z unsual features
+    if Number >1:   # dosen't bother printing if the popualtion of that creature is zero
         if(Broad_compi=='--'):
             Det_compi=''
         else:
@@ -669,11 +730,13 @@ def print_nicely(livingthingname):
             smalldict=dictofdicts[smalldictkey]
             Det_defnd=smalldict[Broad_defnd]        
         if(Det_compi+Det_predi+Det_defnd==''):
-            final_word='nothing'
+            final_word='nothing'  # produces the 'noted for nothing' text
         else: final_word=''
 
         print('The {0} {1} is noted for {2}, {3}, {4}, {5}.'.format(Broad_type,livingthing['name'],Det_compi,Det_predi,Det_defnd,final_word))
 
+##### second line of output
+        #there are this many in the area. 
         if(Broad_type !='Meati_eater'):
             if(Broad_type == 'Herbi_eater'):
                 tempkey = 'beast_'+str(Broad_size)
@@ -689,17 +752,19 @@ def print_nicely(livingthingname):
             det_size = dictofsize[tempkey1]
             det_preysize = dictofsize[tempkey2]
             print('It is ', det_size, 'sized with a preffered prey of ', det_preysize, 'size')
-            if int(Broad_size)+1<int(Broad_preysize):
+            if int(Broad_size)<int(Broad_preysize):
                 packsize = evaluate_pack_size(Broad_size, Broad_preysize)
                 print('It rarely found in packs of less than ', packsize, 'individuals. There are ', int(Number), 'of these packs in the area.')
             else: print('There are ', Number, ' of these typically lone predators in the area')
-                
+
+#### third optional line of output                
         if(Broad_defbehav in {'RK','PA','SC'}):
             smalldictkey=Broad_type+'_defbehav'
             smalldict=dictofdicts[smalldictkey]
             Det_defbehav=smalldict[Broad_defbehav]
             print('when threatened it will ', Det_defbehav)
 
+#### fouth optional line of output
         if(Broad_behav in {'RK','PA','SC'}):
             smalldictkey=Broad_type+'_behav'
             smalldict=dictofdicts[smalldictkey]
@@ -709,6 +774,16 @@ def print_nicely(livingthingname):
         #    print('it has a current fitness score of {0} leading to total species energy of {1}.'.format(livingthing['fitness'],livingthing['Species_energy']))
             #print('It eats mostly {0}.'.format(livingthing[first_choice_food]))
 
+######
+        ## DND outputs
+        ## Dangerous: anything with human size prey, anything that will defend aggresively, parasitic life stage, digestive ooze
+        ## Feature: anything big, anything with loud wanring calls, 
+        ## Useful: anything with horns, tusks spikes, brightly poisonous, 
+
+
+
+###############################
+#  Input functions  #
 
 def startup_data():
     Nprod = input('Please enter the target number of producers (default 5)')
@@ -846,15 +921,4 @@ for x in range(0,3):
 
 print_all()
     
-
-    #print_nicely(temp)
-    #print(EntryCounters)
-#print('---888---')
-#print(dictofproducer)
-#print('---')
-#print(dictofherbivore)
-#print('---')
-#print('test', dictofcarnivore)
-#print(dictofdicts)   #proof that print(dictionary) prints all enteries
-#
 
