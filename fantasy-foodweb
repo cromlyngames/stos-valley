@@ -493,9 +493,9 @@ forenamelist =[ 'Aard',
 'Ze',
 'Zeb',
 'Spi',
-'buf',
-'cr',
-'leo',]
+'Buf',
+'Cr',
+'Leo',]
 
 surnamelist =[
     'vark',
