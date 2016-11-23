@@ -1,4 +1,5 @@
 import random
+import time
 
 #The intention is, given inputs, generate a set of animals and some skills
 #generates a feeding matrix to see who eats what
@@ -1557,6 +1558,11 @@ def print_roughly(livingthingname): # used for testing at command line more than
           livingthing['fitness'], livingthing['Species_energy'])
 
 def print_all():
+
+    print()
+    print("  ~~~  ")
+    print()
+
     for producer in dictofproducer:
         print_nicely(producer)
     print()
@@ -1565,8 +1571,13 @@ def print_all():
     print()
     for beast in dictofcarnivore:
         print_nicely(beast)
+    print()
+    print("  ~~~  ")
+    print()
+
 
 def print_nicely(livingthingname):
+
     if 10000 <livingthingname<49999:
         dictofthings=dictofproducer
     elif 50000 <livingthingname <59999:
@@ -1574,6 +1585,10 @@ def print_nicely(livingthingname):
     else: dictofthings=dictofcarnivore
     
     livingthing=dictofthings[livingthingname]
+    #name it
+    f=random.randint(0,len(forenamelist)-1)
+    s=random.randint(0,len(forenamelist)-1)
+    commonname=forenamelist[f]+surnamelist[s]
     #Pull out info that needs refining from that creatures entry
     Broad_type=livingthing['type']
     Broad_compi=livingthing['compi']
@@ -1585,11 +1600,7 @@ def print_nicely(livingthingname):
     Broad_preysize = livingthing['Prey_size']
     Number = int(livingthing['Number'])
     #now, lets look up what the SC, RK PA codes mean for each case
-
-    f=random.randint(0,len(forenamelist))
-    s=random.randint(0,len(forenamelist))
-    commonname=forenamelist[f]+surnamelist[s]
-
+    
 # First line of output
 # The Creature is noted for X, Y ,Z unsual features
     if Number >1:   # dosen't bother printing if the popualtion of that creature is zero
@@ -1714,7 +1725,7 @@ skill_freq = 3 # 1= certain, 5 means most have 1-2
 #starter info. an inline input
 incoming_light, incoming_chem, incoming_magic, incoming_detritus, Number_producers, Number_herbivores, Number_carnivores = startup_data()
 
-
+start_time = time.time()  #real time measure. other programs on computer will affect
 
 
 #inital best guess. Reliable when lots of producers
@@ -1762,6 +1773,7 @@ dictofherbivore=prune_dictionary(dictofherbivore)
 dictofcarnivore=prune_dictionary(dictofcarnivore)
 
 i=1
+k=0
 while i >0:
     #prunes the zero's out. evalutes until stable, cull's weakest. refills's foodweb. evals, prunes and repeats
     
@@ -1794,14 +1806,18 @@ while i >0:
     dictofcarnivore=prune_dictionary(dictofcarnivore)
 
     i=Number_producers-len(dictofproducer) + Number_herbivores-len(dictofherbivore)+Number_carnivores-len(dictofcarnivore)
-
+    k=k+1
+    
 for x in range(0,3):
     #final evaluation set to produce good foodweb.
     
     dictofproducer, total_herbivore_energy, total_carnivore_energy = evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_energy)
     evaluate_herbivores(dictofherbivore)
     evaluate_carnivores(dictofcarnivore)
-    
+
+print()
+print("foodweb stabilised in ", k+2, "iterations")
+print("--- %s seconds ---" % (time.time()-start_time))
 
 print_all()
     
