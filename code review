@@ -1,0 +1,19 @@
+thanks to Jonno_FTW via /r/codereview 
+
+From my quick look over:
+This is not pep8 compliant. Please run it through a pep8 cleaner.
+Block comments should be in triple quotes, not large blocks of #.
+Adding a 2 to a variable name is confusing: https://github.com/cromlyngames/stos-valley/blob/master/fantasy-foodweb#L1514
+You mix up your naming style. Try to stick to first_last when naming variables and functions.
+It's a python file but doesn't have a .py extension or a #!/usr/bin/env python at the start
+comments with a # need to have a space after the #
+forenamelist and surnamelist take up too many lines. Put them in a separate file and read them in. If you don't do that, try putting multiple names on a line
+https://github.com/cromlyngames/stos-valley/blob/master/fantasy-foodweb#L945 dictofdicts is the not a very informative variable name. Please make it more descriptive
+if(Temp_value < incoming_light): if statements do not need parenthesis around them
+Why are you mixing indentation styles with your if..else? https://github.com/cromlyngames/stos-valley/blob/master/fantasy-foodweb#L1109 Do it like this:
+if condition:
+    a = 1
+else:
+    a = 2
+This function does way too much. Try splitting it up: https://github.com/cromlyngames/stos-valley/blob/master/fantasy-foodweb#L1140
+This code uses too many global variables, try making a class so that you only expose the necessary methods of your creation logic.
