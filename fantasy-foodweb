@@ -19,45 +19,45 @@ from listofsounds import forenamelist, surnamelist  # this file should be in the
 ###########################################
 ## lookup Dictionarys of fun output text ##
 
-Light_eater_compi = { 'SC': 'Quickly growing to full height','RK': 'Entangling climber',     'PA': 'Symbiotic Defender '}
-Chem_eater_compi = { 'SC': 'Multiple food types',           'RK': 'Colonisation ',          'PA': 'Extremophile'}
-Magic_eater_compi = { 'SC': 'Sprawling mass',               'RK': 'Magical Reservoirs in Roots/Stem/Spots',      'PA': 'Fire/Ice/Other Environmental discharge'}
-Detri_eater_compi = { 'SC': 'Tendrils',                     'RK': 'Mobile life stage - maggots, flies or similar',      'PA': 'Digestive ooze'}
-Light_eater_defnd = { 'SC': 'Tall, high leaves',            'RK': 'Woody stems',            'PA': 'Sacrificial Fruits '}
-Chem_eater_defnd = { 'SC': 'Withdrawal reflex',              'RK': 'Heavy metal concentrate', 'PA': 'Stone skin'}
-Magic_eater_defnd = { 'SC': 'Floating/hiding/distracting',  'RK': 'Cursed Spines/thorns',    'PA': 'Regeneration'}
-Detri_eater_defnd = { 'SC': 'Deep roots',                   'RK': 'Brightly Poisonous',     'PA': 'Parasitic life stage'}
+Light_eater_compi    = { 'SC': 'Quickly growing to full height',  'RK': 'Entangling climber',                            'PA': 'Symbiotic Defender '}
+Chem_eater_compi     = { 'SC': 'Multiple food types',             'RK': 'Colonisation ',                                 'PA': 'Extremophile'}
+Magic_eater_compi    = { 'SC': 'Sprawling mass',                  'RK': 'Magical Reservoirs in Roots/Stem/Spots',        'PA': 'Fire/Ice/Other Environmental discharge'}
+Detri_eater_compi    = { 'SC': 'Tendrils',                        'RK': 'Mobile life stage - maggots, flies or similar', 'PA': 'Digestive ooze'}
+Light_eater_defnd    = { 'SC': 'Tall, high leaves',               'RK': 'Woody stems',                                   'PA': 'Sacrificial Fruits '}
+Chem_eater_defnd     = { 'SC': 'Withdrawal reflex',               'RK': 'Heavy metal concentrate',                       'PA': 'Stone skin'}
+Magic_eater_defnd    = { 'SC': 'Floating/hiding/distracting',     'RK': 'Cursed Spines/thorns',                          'PA': 'Regeneration'}
+Detri_eater_defnd    = { 'SC': 'Deep roots',                      'RK': 'Brightly Poisonous',                            'PA': 'Parasitic life stage'}
+                                                                  
+Herbi_eater_compi    = { 'RK': 'Rapid growth',                    'PA': 'Loud warning calls',                            'SC': 'Dense and tough muscly  body'}
+Herbi_eater_predi    = { 'RK': 'Long neck/good climber/burrower', 'PA': 'Specialised gut',                               'SC': 'Grinding maw/teeth/beak'}
+Herbi_eater_defnd    = { 'RK': 'Horns/antlers/tusks/spikes',      'PA': 'Fast and nimble',                               'SC': 'Keen senses'}
+Herbi_eater_defbehav = { 'RK': 'Flee from danger',                'PA': 'Defend aggressively',                           'SC': 'Sense and avoid'}
 
-Herbi_eater_compi = { 'RK': 'Rapid growth',                 'PA': 'Loud warning calls','SC': 'Dense and tough muscly  body'}
-Herbi_eater_predi = { 'RK': 'Long neck/good climber/burrower', 'PA': 'Specialised gut',     'SC': 'Grinding maw/teeth/beak'}
-Herbi_eater_defnd = { 'RK': 'Horns/antlers/tusks/spikes',   'PA': 'Fast and nimble',        'SC': 'Keen senses'}
-Herbi_eater_defbehav = { 'RK': 'Flee from danger',             'PA': 'Defend aggressively',     'SC': 'Sense and avoid'}
+Meati_eater_compi    = { 'PA': ' Climber/flyer/burrower',         'SC': 'Extra long grappling limbs',                    'RK': 'Thick hide/shell '}
+Meati_eater_predi    = { 'PA': 'Crushing bite/pounce/squeeze',    'SC': 'stealthy camouflage',                           'RK': 'Venomous strike'}
+Meati_eater_defnd    = { 'PA': 'seasonally nomadic',              'SC': 'defends territory / or den',                    'RK': 'will form larger packs when hungry'}
+Meati_eater_defbehav = { 'RK': 'flee from danger',                'PA': 'defend aggressively',                           'SC': 'sense and avoid'}
+Meati_eater_behav    = { 'PA': 'an endurance chaser',             'SC': 'a killer charger',                              'RK': 'a stealthy ambusher'}
 
-Meati_eater_compi = { 'PA': ' Climber/flyer/burrower',       'SC': 'Extra long grappling limbs',    'RK': 'Thick hide/shell '}
-Meati_eater_predi = { 'PA': 'Crushing bite/pounce/squeeze', 'SC': 'stealthy camouflage',      'RK': 'Venomous strike'}
-Meati_eater_defnd = { 'PA': 'seasonally nomadic',            'SC': 'defends territory / or den',            'RK': 'will form larger packs when hungry'}
-Meati_eater_defbehav = { 'RK': 'flee from danger',             'PA': 'defend aggressively',     'SC': 'sense and avoid'}
-Meati_eater_behav = { 'PA': 'an endurance chaser',             'SC': 'a killer charger',          'RK': 'a stealthy ambusher'}
-
-dictofsize ={
-    'producer_1':'finger long, grass',
-    'producer_2':'hand size, potplant',
-    'producer_3':'knee high, bush',
-    'producer_4':'head height, large bush',
-    'producer_5':'2 men tall, fruit tree',
-    'producer_6':'4 men tall, large tree',
-    'producer_7':'6 men tall, mature tree',  
-    'producer_8':'giant, sequoia',
-    'producer_9':'leviathan, small hill',
-    'beast_1':'tiny, ant',
-    'beast_2':'small, rat',
-    'beast_3':'medium, fox',
-    'beast_4':'human',
-    'beast_5':'large, bear',
-    'beast_6':'big, rhino',
-    'beast_7':'huge, T-Rex',  
-    'beast_8':'giant, Diplodocus',
-    'beast_9':'leviathan, small hill' 
+dictofsize = {
+    'producer_1': 'finger long, grass',
+    'producer_2': 'hand size, potplant',
+    'producer_3': 'knee high, bush',
+    'producer_4': 'head height, large bush',
+    'producer_5': '2 men tall, fruit tree',
+    'producer_6': '4 men tall, large tree',
+    'producer_7': '6 men tall, mature tree',  
+    'producer_8': 'giant, sequoia',
+    'producer_9': 'leviathan, small hill',
+    'beast_1':    'tiny, ant',
+    'beast_2':    'small, rat',
+    'beast_3':    'medium, fox',
+    'beast_4':    'human',
+    'beast_5':    'large, bear',
+    'beast_6':    'big, rhino',
+    'beast_7':    'huge, T-Rex',  
+    'beast_8':    'giant, Diplodocus',
+    'beast_9':    'leviathan, small hill' 
     }
 
 
@@ -65,7 +65,7 @@ dictofsize ={
 ###########################################
 ## Organiser dictonaries for data passing##
 
-dictofdicts ={
+dictofdicts = {
     'Light_eater_compi':    Light_eater_compi,
     'Chem_eater_compi':     Chem_eater_compi,
     'Magic_eater_compi':    Magic_eater_compi,
@@ -73,13 +73,13 @@ dictofdicts ={
 
     'Light_eater_defnd':    Light_eater_defnd,
     'Chem_eater_defnd':     Chem_eater_defnd,
-    'Magic_eater_defnd':   Magic_eater_defnd,
+    'Magic_eater_defnd':    Magic_eater_defnd,
     'Detri_eater_defnd':    Detri_eater_defnd,
 
     'Herbi_eater_compi':    Herbi_eater_compi,
     'Herbi_eater_predi':    Herbi_eater_predi,
     'Herbi_eater_defnd':    Herbi_eater_defnd,
-    'Herbi_eater_defbehav':    Herbi_eater_defbehav,
+    'Herbi_eater_defbehav': Herbi_eater_defbehav,
 
     'Meati_eater_compi':    Meati_eater_compi,
     'Meati_eater_predi':    Meati_eater_predi,
@@ -90,13 +90,13 @@ dictofdicts ={
 
 
 #used to define the blocks where creature codenames begin:
-EntryCounters={
-    'Light_counter':10000,
-    'Chem_counter' :20000,
-    'Magic_counter':30000,
-    'Detri_counter':40000,
-    'Herbivore_counter':50000,
-    'Carnivore_counter':60000
+EntryCounters = {
+    'Light_counter':     10000,
+    'Chem_counter' :     20000,
+    'Magic_counter':     30000,
+    'Detri_counter':     40000,
+    'Herbivore_counter': 50000,
+    'Carnivore_counter': 60000
     }
 
 
@@ -108,8 +108,8 @@ EntryCounters={
 
 #this function creates a random type of generic skill.
 def Create_skill():
-    type_skill=['SC', 'RK', 'PA']
-    temp_value=random.randint(0,2) #since lists start at 0
+    type_skill = ['SC', 'RK', 'PA']
+    temp_value = random.randint(0,2) #since lists start at 0
     return(type_skill[temp_value])
 
 def Create_size():
@@ -117,40 +117,40 @@ def Create_size():
     for x in range (0,4):
         temp = temp + random.randint(-1,9) #gives nice normal distribution about 3.6
     Size = int(abs(temp))+1 #makes sure size >0 and an nice integer
-    while Size >9:
-        Size=Size-9
+    while Size > 9:
+        Size = Size-9
         
     return(Size)
 
 #Create a producer. Increment the correct counter.
 def Create_Producer_type(EntryCounters):
     total_energy = incoming_light+incoming_chem+incoming_magic+incoming_detritus
-    Temp_value= random.randint(1,total_energy)
+    Temp_value   = random.randint(1,total_energy)
     if(Temp_value < incoming_light):
-        Producer_type='Light_eater'
+        Producer_type = 'Light_eater'
         EntryCounters['Light_counter'] = EntryCounters['Light_counter'] +1
-        Name= EntryCounters['Light_counter']
+        Name = EntryCounters['Light_counter']
         return(Producer_type, EntryCounters, Name)
     else:
-        Temp_value=Temp_value-incoming_light
+        Temp_value = Temp_value-incoming_light
 
     if(Temp_value < incoming_chem):
-        Producer_type='Chem_eater'
+        Producer_type = 'Chem_eater'
         EntryCounters['Chem_counter'] = EntryCounters['Chem_counter'] +1
-        Name= EntryCounters['Chem_counter']
+        Name = EntryCounters['Chem_counter']
         return(Producer_type, EntryCounters, Name)
     else:
-        Temp_value=Temp_value-incoming_chem
+        Temp_value = Temp_value-incoming_chem
 
     if(Temp_value < incoming_magic):
-        Producer_type='Magic_eater'
+        Producer_type = 'Magic_eater'
         EntryCounters['Magic_counter'] = EntryCounters['Magic_counter']+1
-        Name= EntryCounters['Magic_counter']
+        Name = EntryCounters['Magic_counter']
         return(Producer_type, EntryCounters, Name)
     else:
-        Producer_type='Detri_eater'
-        EntryCounters['Detri_counter'] =EntryCounters['Detri_counter']+1
-        Name= EntryCounters['Detri_counter']
+        Producer_type ='Detri_eater'
+        EntryCounters['Detri_counter'] = EntryCounters['Detri_counter']+1
+        Name = EntryCounters['Detri_counter']
         return(Producer_type, EntryCounters, Name)
         
 def Create_Producer(EntryCounters):
@@ -190,9 +190,9 @@ def Create_Herbivore(EntryCounters):
        defbehav_type=Create_skill()
     else: defbehav_type='--'
      
-    Size = Create_size()
+    Size           = Create_size()
     Species_energy = 100    #intilaises everyone the same starting energy.
-    Number = 10
+    Number         = 10
     this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'Number':Number,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'behav':' ', 'defbehav':defbehav_type,'Size':Size, 'Prey_size':' '}
     return(this_beast,EntryCounters) 
 
@@ -210,16 +210,15 @@ def Mutate_Herbivore(EntryCounters, parentname):
     child, EntryCounters =Create_Herbivore(EntryCounters)
 
     #change child to match parent
-    child['compi']=parent['compi']
-    child['predi']=parent['predi']
-    child['defnd']=parent['defnd']
-    child['behav']=parent['behav']
-    child['defbehav']=parent['defbehav']
-    child['Size']=parent['Size']
-    child['Prey_size']=['Prey_size']
-    #set small child starter popualtion
-    child['Number']=1
-    child['Species_energy']=parent['Species_energy']/parent['Number']
+    child['compi']          = parent['compi']
+    child['predi']          = parent['predi']
+    child['defnd']          = parent['defnd']
+    child['behav']          = parent['behav']
+    child['defbehav']       = parent['defbehav']
+    child['Size']           = parent['Size']
+    child['Prey_size']      = ['Prey_size']
+    child['Number']         = 1 #set small child starter population    
+    child['Species_energy'] = parent['Species_energy']/parent['Number']
     
 
 #create a new Carnivore
@@ -262,8 +261,8 @@ def Create_Carnivore(EntryCounters):
 
 def evaluate_carnivores(dictofcarnivore):
     #calculate the total energy available at this trophic level
-    basic_share_of_energy=total_carnivore_energy/len(dictofcarnivore) #simple average
-    total_fitness=0
+    basic_share_of_energy = total_carnivore_energy/len(dictofcarnivore) #simple average
+    total_fitness = 0
     #competition modifiers
     for mainmonster in dictofcarnivore:
         temp_fitness = 1 #assumes all equally fit
@@ -273,19 +272,19 @@ def evaluate_carnivores(dictofcarnivore):
         #do this outside the rock,paper scissor loop to conserve loops
         size = dictofcarnivore[mainmonster]['Prey_size']
         for tempmonster in dictofherbivore:
-            prey_size = dictofherbivore[tempmonster]['Size']                              
-            size_factor = evaluate_prey_size(size, prey_size) # measures how good the carnivore would be at catching the herbivore
-            temp_fitness= temp_fitness +size_factor*dictofherbivore[tempmonster]['Species_energy']
+            prey_size    = dictofherbivore[tempmonster]['Size']                              
+            size_factor  = evaluate_prey_size(size, prey_size) # measures how good the carnivore would be at catching the herbivore
+            temp_fitness = temp_fitness +size_factor*dictofherbivore[tempmonster]['Species_energy']
 
         for tempmonster in dictofcarnivore:
-            prey_size = dictofcarnivore[tempmonster]['Size']
-            size_factor = evaluate_prey_size(size, prey_size)
-            temp_fitness= temp_fitness +size_factor*dictofcarnivore[tempmonster]['Species_energy']
+            prey_size    = dictofcarnivore[tempmonster]['Size']
+            size_factor  = evaluate_prey_size(size, prey_size)
+            temp_fitness = temp_fitness +size_factor*dictofcarnivore[tempmonster]['Species_energy']
             
         for i in range (0,3):
-            first_key=listofcodes[i]
-            second_key=listofcodes[i+1]
-            third_key=listofcodes[i+2]
+            first_key  = listofcodes[i]
+            second_key = listofcodes[i+1]
+            third_key  = listofcodes[i+2]
             if dictofcarnivore[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
                 #START checking and scoring compi
                 if dictofcarnivore[mainmonster]['compi']==first_key:
@@ -520,9 +519,9 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
         listofcodes=['RK','PA', 'SC','RK','PA', 'SC','RK'] 
             
         for i in range (0,3):
-            first_key=listofcodes[i]
-            second_key=listofcodes[i+1]
-            third_key=listofcodes[i+2]
+            first_key  = listofcodes[i]
+            second_key = listofcodes[i+1]
+            third_key  = listofcodes[i+2]
             #print(first_key, second_key,third_key)
             if dictofproducer[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
                 if dictofproducer[mainmonster]['compi']==first_key: #
@@ -558,10 +557,10 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
     if total_fitness == 0: total_fitness=1
     print('total fitness', total_fitness)
 
-    light_fitness=1  # seperate fitness totals needed for each source
-    chem_fitness=1   # to stop light eaters feast on chem energy ect.
-    magic_fitness=1
-    detri_fitness=1
+    light_fitness = 1  # seperate fitness totals needed for each source
+    chem_fitness  = 1   # to stop light eaters feast on chem energy ect.
+    magic_fitness = 1
+    detri_fitness = 1
     
     for mainmonster in dictofproducer:
         #share_factor=dictofproducer[mainmonster]['fitness']/total_fitness
@@ -819,8 +818,8 @@ def startup_data():
     Nlight = startup_data_cleanse(Nlight,0)
     Nmagic = input('magical energy =')
     Nmagic = startup_data_cleanse(Nmagic,0)
-    Nchem = input('chemical energy =')
-    Nchem = startup_data_cleanse(Nchem,0)
+    Nchem  = input('chemical energy =')
+    Nchem  = startup_data_cleanse(Nchem,0)
     Ndetri = input('detritus energy =')
     Ndetri = startup_data_cleanse(Ndetri,0)
 
@@ -853,18 +852,18 @@ start_time = time.time()  #real time measure. other programs on computer will af
 
 #inital best guess. Reliable when lots of producers
 #will be corrected later, once you know how much energy is caputred
-total_producer_energy=incoming_light+incoming_magic+incoming_chem+incoming_detritus
-total_herbivore_energy=total_producer_energy/10
-total_carnivore_energy=total_producer_energy/100
+total_producer_energy  = incoming_light+incoming_magic+incoming_chem+incoming_detritus
+total_herbivore_energy = total_producer_energy/10
+total_carnivore_energy = total_producer_energy/100
 
-dictofproducer={} #initialise dictionary
-dictofherbivore={} #initialise dictionary
-dictofcarnivore={} #initialise dictionary
+dictofproducer  = {} #initialise dictionary
+dictofherbivore = {} #initialise dictionary
+dictofcarnivore = {} #initialise dictionary
 
-t1= EntryCounters['Light_counter']-10000  
-t2= EntryCounters['Chem_counter']-20000
-t3= EntryCounters['Magic_counter']-30000
-t4= EntryCounters['Detri_counter']-40000
+t1 = EntryCounters['Light_counter']-10000  
+t2 = EntryCounters['Chem_counter']-20000
+t3 = EntryCounters['Magic_counter']-30000
+t4 = EntryCounters['Detri_counter']-40000
 # sum total t1+t2+t3+t4 gives current number of producers
 CurrentNumberProducers=t1+t2+t3+t4
 CurrentNumberHerbivores = EntryCounters['Herbivore_counter']-50000
@@ -943,5 +942,3 @@ print("foodweb stabilised in ", k+2, "iterations")
 print("--- %s seconds ---" % (time.time()-start_time))
 
 print_all()
-    
-
