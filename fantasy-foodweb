@@ -209,14 +209,33 @@ def Mutate_Herbivore(EntryCounters, parentname):
     parent
     child, EntryCounters =Create_Herbivore(EntryCounters)
 
-    #change child to match parent
-    child['compi']          = parent['compi']
-    child['predi']          = parent['predi']
-    child['defnd']          = parent['defnd']
-    child['behav']          = parent['behav']
-    child['defbehav']       = parent['defbehav']
-    child['Size']           = parent['Size']
-    child['Prey_size']      = ['Prey_size']
+    #change child to match parent, unless that is the mutation
+    # loop this twice, to get two mutations, or reasonalbe chance of 1 actual change and one changed to something identical
+    
+    for x in range (0,2):
+      mutationindex = random.randint(1,11)
+      if(mutationindex!=1):
+        child['compi']          = parent['compi']
+      elseif(mutationindex!=2):
+        child['predi']          = parent['predi']
+      elseif(mutationindex!=3):
+        child['defnd']          = parent['defnd']
+      elseif(mutationindex!=4):
+        child['behav']          = parent['behav']
+      elseif(mutationindex!=5):
+        child['defbehav']       = parent['defbehav']
+      elseif(mutationindex!=6):
+        child['Size']           = parent['Size']-1
+      elseif(mutationindex!=7):
+        child['Size']           = parent['Size']-1
+      elseif(mutationindex!=8):
+        child['Size']           = parent['Size']+1
+      elseif(mutationindex!=9):
+       child['Size']           = parent['Size']+1
+      else:  // for mutationindex = 10 or 11
+  `       child['Prey_size']      = ['Prey_size']-1
+    child['Prey_size']      = ['Prey_size']+1
+    
     child['Number']         = 1 #set small child starter population    
     child['Species_energy'] = parent['Species_energy']/parent['Number']
     
