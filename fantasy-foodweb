@@ -196,25 +196,30 @@ def Create_Herbivore(EntryCounters):
     this_beast={'name':Name,'type':Producer_type,'fitness':10,'Species_energy':Species_energy,'Number':Number,'compi':compi_type, 'predi':predi_type, 'defnd':defnd_type, 'behav':' ', 'defbehav':defbehav_type,'Size':Size, 'Prey_size':' '}
     return(this_beast,EntryCounters) 
 
-# Create a new subspecies of herbivore # STILL WIP
-def Mutate_Herbivore(EntryCounters, parentname):  #parent name is numerical
+
+# Create a new subspecies  # STILL WIP
+def Mutate_Monster(EntryCounters, parentname):  #parent name is numerical
     if 10000 <parentname<49999:
         dictofthings=dictofproducer
+        child, EntryCounters =Create_Producer(EntryCounters)
     elif 50000 <parentname <59999:
         dictofthings=dictofherbivore
-    else: dictofthings=dictofcarnivore
-    
+        child, EntryCounters =Create_Herbivore(EntryCounters)
+    else: 
+        dictofthings=dictofcarnivore
+        child, EntryCounters =Create_Carnivore(EntryCounters)
 
     #create space for child in index
-    parent = dictofherbivore[parentname]
-    child, EntryCounters =Create_Herbivore(EntryCounters)
-
+    parent = dictofthings[parentname]
+    
     #change child to match parent, unless that is the mutation
     # get two mutations, including reasonalbe chance of 1 actual change and one changed to something identical eg Rk to RK, 2 mutations on the same item (same affect as one) or 2 mutatations that cancel each other out (size +1, size -1)
+    # so in the case either of the mutation indexys is equal to that possible mutation, that stat is equal to the randomly created monster, not the parent
     
-    
-    mutationindex = random.randint(1,11)
-    mutationindey = random.randint(1,11)
+    mutationindex = random.randint(1,9)
+    mutationindey = random.randint(1,9)
+    child['Size']=parent['Size']
+    child['Prey_size'] = parent['Prey_size']    
     if mutationindex!=1 and mutationindey!=1:
         child['compi']          = parent['compi']
     elif mutationindex !=2 and mutationindey!=2:
@@ -225,18 +230,19 @@ def Mutate_Herbivore(EntryCounters, parentname):  #parent name is numerical
         child['behav']          = parent['behav']
     elif mutationindex!=5  and mutationindey!=5:
         child['defbehav']       = parent['defbehav']
-    # so in the case either of the mutation indexys is equal to that possible mutation, that stat is equal to the randomly created monster, not the parent
-
     elif mutationindex!=6  and mutationindey!=6:
-        child['Size']           = parent['Size'] + random.randint(0,1)*2-1   # gives -1 or +1
+        child['Size'] = child['Size'] + random.randint(0,1)*2-1   # gives -1 or +1
     elif mutationindex!=7  and mutationindey!=7:
-        child['Size']           = parent['Size'] + random.randint(0,1)*2-1   # gives -1 or +1
+        child['Size']= child['Size'] + random.randint(0,1)*2-1   # gives -1 or +1
     else:  # for mutationindex = 8 or 9
-        child['Prey_size']      = ['Prey_size'] + random.randint(0,1)*2-1   # gives -1 or +1
+        child['Prey_size']      =child['Prey_size'] + random.randint(0,1)*2-1   # gives -1 or +1
 
     child['Number']         = 1 #set small child starter population    
     child['Species_energy'] = parent['Species_energy']/parent['Number']
-    print_nicely(child['name'])
+    print(mutationindex, mutationindey)
+    print(parent)
+    return(child,EntryCounters) 
+
     
 
 #create a new Carnivore
