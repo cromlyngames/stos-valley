@@ -230,9 +230,9 @@ def Mutate_Monster(EntryCounters, parentname):  #parent name is numerical
         child['behav']          = parent['behav']
     elif mutationindex!=5  and mutationindey!=5:
         child['defbehav']       = parent['defbehav']
-    elif mutationindex!=6  and mutationindey!=6:
+    elif mutationindex==6  or mutationindey==6:
         child['Size'] = child['Size'] + random.randint(0,1)*2-1   # gives -1 or +1
-    elif mutationindex!=7  and mutationindey!=7:
+    elif mutationindex==7  or mutationindey==7:
         child['Size']= child['Size'] + random.randint(0,1)*2-1   # gives -1 or +1
     else:  # for mutationindex = 8 or 9
         child['Prey_size']      =child['Prey_size'] + random.randint(0,1)*2-1   # gives -1 or +1
