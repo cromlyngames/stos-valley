@@ -687,6 +687,10 @@ def mutate_monster(EntryCounters, parentname):  #parent name is numerical
 
     child['Number']         = 1 #set small child starter population    
     child['Species_energy'] = parent['Species_energy']/parent['Number']
+    if child['Prey_size']<1:
+        child['Prey_size']=1
+    if child['Size']<1:
+        child['Size']=1
     print(mutationindex, mutationindey)
     print(parent)
     return(child,EntryCounters) 
