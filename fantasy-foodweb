@@ -647,12 +647,15 @@ def mutate_monster(EntryCounters, parentname):  #parent name is numerical
     if 10000 <parentname<49999:
         dictofthings=dictofproducer
         child, EntryCounters =Create_Producer(EntryCounters)
+        mutation_trait_limit =4
     elif 50000 <parentname <59999:
         dictofthings=dictofherbivore
         child, EntryCounters =Create_Herbivore(EntryCounters)
+        mutation_trait_limit= 6
     else: 
         dictofthings=dictofcarnivore
         child, EntryCounters =Create_Carnivore(EntryCounters)
+        mutation_trait_limit=9
 
     #create space for child in index
     parent = dictofthings[parentname]
@@ -665,20 +668,20 @@ def mutate_monster(EntryCounters, parentname):  #parent name is numerical
     mutationindey = random.randint(1,9)
     child['Size']=parent['Size']
     child['Prey_size'] = parent['Prey_size']    
-    if mutationindex!=1 and mutationindey!=1:
-        child['compi']          = parent['compi']
-    elif mutationindex !=2 and mutationindey!=2:
-        child['predi']          = parent['predi']
-    elif mutationindex!=3  and mutationindey!=3:
-        child['defnd']          = parent['defnd']
-    elif mutationindex!=4  and mutationindey!=4:
-        child['behav']          = parent['behav']
-    elif mutationindex!=5  and mutationindey!=5:
-        child['defbehav']       = parent['defbehav']
-    elif mutationindex==6  or mutationindey==6:
+    if mutationindex==1 or mutationindey==1:
         child['Size'] = child['Size'] + random.randint(0,1)*2-1   # gives -1 or +1
+    elif mutationindex==2 or mutationindey==2:
+        child['Size'] = child['Size'] + random.randint(0,1)*2-1   # gives -1 or +1
+    elif mutationindex!=3  and mutationindey!=3:
+        child['compi']          = parent['compi']
+    elif mutationindex!=4  and mutationindey!=4:
+        child['defnd']          = parent['defnd']
+    elif mutationindex!=5  and mutationindey!=5:
+        child['predi']          = parent['predi']
+    elif mutationindex!=6  and mutationindey!=6:
+        child['defbehav']       = parent['defbehav']        
     elif mutationindex==7  or mutationindey==7:
-        child['Size']= child['Size'] + random.randint(0,1)*2-1   # gives -1 or +1
+        child['behav']          = parent['behav']
     else:  # for mutationindex = 8 or 9
         child['Prey_size']      =child['Prey_size'] + random.randint(0,1)*2-1   # gives -1 or +1
 
