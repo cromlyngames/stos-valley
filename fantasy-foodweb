@@ -664,8 +664,8 @@ def mutate_monster(EntryCounters, parentname):  #parent name is numerical
     # get two mutations, including reasonalbe chance of 1 actual change and one changed to something identical eg Rk to RK, 2 mutations on the same item (same affect as one) or 2 mutatations that cancel each other out (size +1, size -1)
     # so in the case either of the mutation indexys is equal to that possible mutation, that stat is equal to the randomly created monster, not the parent
     
-    mutationindex = random.randint(1,9)
-    mutationindey = random.randint(1,9)
+    mutationindex = random.randint(1,mutation_trait_limit)
+    mutationindey = random.randint(1,mutation_trait_limit)
     child['Size']=parent['Size']
     child['Prey_size'] = parent['Prey_size']    
     if mutationindex==1 or mutationindey==1:
@@ -687,6 +687,16 @@ def mutate_monster(EntryCounters, parentname):  #parent name is numerical
 
     child['Number']         = 1 #set small child starter population    
     child['Species_energy'] = parent['Species_energy']/parent['Number']
+    if int(child['Size']) <1:
+        child['Size']=1
+    if int(child['Size']) >9:
+        child['Size']=9
+        
+    if mutation_trait_limit ==9: # becuase otherwise Prey_size = ' '
+        if int(child['Prey_size']) <1:
+            child['Prey_size']=1
+        if int(child['Prey_size']) >9:
+            child['Prey_size']=9
     print(mutationindex, mutationindey)
     print(parent)
     return(child,EntryCounters) 
