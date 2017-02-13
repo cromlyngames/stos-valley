@@ -582,6 +582,25 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
 ##############
 
 def refill_foodweb(EntryCounters, dictofproducer, dictofherbivore, dictofcarnivore):
+    # can't mutate if all the beasts of that type mutally died out, so if they all gone add a new one
+    if len(dictofproducer)==0:
+        temp, EntryCounters=Create_Producer(EntryCounters)
+        tempname=temp['name']
+        dictofproducer[tempname]=temp  #adds producer to dictionary
+        
+    if len(dictofherbivore)==0:
+        temp, EntryCounters=Create_Herbivore(EntryCounters)
+        tempname=temp['name']
+        dictofherbivore[tempname]=temp  #adds producer to dictionary
+
+
+    if len(dictofcarnivore)==0:
+        temp, EntryCounters=Create_Carnivore(EntryCounters)
+        tempname=temp['name']
+        dictofcarnivore[tempname]=temp  #adds producer to dictionary
+
+    #now mutate existing beasts
+            
     for i in range(len(dictofproducer), Number_producers,1):
         EntryCounters, dictofproducer=add_mutant(EntryCounters, dictofproducer)
        
