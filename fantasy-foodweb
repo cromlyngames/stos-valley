@@ -153,14 +153,14 @@ def Create_Producer_type(EntryCounters):
         Name = EntryCounters['Detri_counter']
         return(Producer_type, EntryCounters, Name)
         
-def Create_Producer(EntryCounters):
+def Create_Producer(EntryCounters, LocalSkillFreq):
     #Create_Producer_type could be merged into this function, but meh
     Producer_type, EntryCounters, Name= Create_Producer_type(EntryCounters)
     
-    if(random.randint(1,skill_freq)==1):
+    if(random.randint(1,LocalSkillFreq)==1):
        compi_type=Create_skill()
     else: compi_type='--'
-    if(random.randint(1,skill_freq)==1):
+    if(random.randint(1,LocalSkillFreq)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
 
@@ -172,17 +172,17 @@ def Create_Producer(EntryCounters):
     return(this_producer,EntryCounters)   
 
 #create a new Herbivore
-def Create_Herbivore(EntryCounters):
+def Create_Herbivore(EntryCounters, LocalSkillFreq):
     EntryCounters['Herbivore_counter'] +=1
     Name=EntryCounters['Herbivore_counter']
     Producer_type= 'Herbi_eater'
-    if(random.randint(1,skill_freq)==1):
+    if(random.randint(1,LocalSkillFreq)==1):
        compi_type=Create_skill()
     else: compi_type='--'
-    if(random.randint(1,skill_freq)==1):
+    if(random.randint(1,LocalSkillFreq)==1):
        predi_type=Create_skill()
     else: predi_type='--'
-    if(random.randint(1,skill_freq)==1):
+    if(random.randint(1,LocalSkillFreq)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
 
@@ -198,24 +198,24 @@ def Create_Herbivore(EntryCounters):
     
 
 #create a new Carnivore
-def Create_Carnivore(EntryCounters):
+def Create_Carnivore(EntryCounters, LocalSkillFreq):
     EntryCounters['Carnivore_counter'] +=1
     Name=EntryCounters['Carnivore_counter']
     Producer_type= 'Meati_eater'
-    if(random.randint(1,skill_freq)==1):
+    if(random.randint(1,LocalSkillFreq)==1):
        compi_type=Create_skill()
     else: compi_type='--'
-    if(random.randint(1,skill_freq)==1):
+    if(random.randint(1,LocalSkillFreq)==1):
        predi_type=Create_skill()
     else: predi_type='--'
-    if(random.randint(1,skill_freq)==1):
+    if(random.randint(1,LocalSkillFreq)==1):
        defnd_type=Create_skill()
     else: defnd_type='--'
 
     if(random.randint(1,1)==1):   #they all get a defbehav tag
        defbehav_type=Create_skill()
     else: defbehav_type='--'  #defbav type defines how behaves when preyed upon themselves.
-    if(random.randint(1,skill_freq)==1):
+    if(random.randint(1,LocalSkillFreq)==1):
        behav_type=Create_skill()
     else: behav_type='--'     # behav type defines how behaves when hunting another creature
 
@@ -584,18 +584,18 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
 def refill_foodweb(EntryCounters, dictofproducer, dictofherbivore, dictofcarnivore):
     # can't mutate if all the beasts of that type mutally died out, so if they all gone add a new one
     if len(dictofproducer)==0:
-        temp, EntryCounters=Create_Producer(EntryCounters)
+        temp, EntryCounters=Create_Producer(EntryCounters,3)
         tempname=temp['name']
         dictofproducer[tempname]=temp  #adds producer to dictionary
         
     if len(dictofherbivore)==0:
-        temp, EntryCounters=Create_Herbivore(EntryCounters)
+        temp, EntryCounters=Create_Herbivore(EntryCounters,3)
         tempname=temp['name']
         dictofherbivore[tempname]=temp  #adds producer to dictionary
 
 
     if len(dictofcarnivore)==0:
-        temp, EntryCounters=Create_Carnivore(EntryCounters)
+        temp, EntryCounters=Create_Carnivore(EntryCounters,3)
         tempname=temp['name']
         dictofcarnivore[tempname]=temp  #adds producer to dictionary
 
@@ -658,22 +658,20 @@ def add_mutant(EntryCounters, dictoflivingthings):
     dictoflivingthings[childname]=child  #adds child to correct dictionary
     return(EntryCounters, dictoflivingthings)
 
-# Create a new subspecies  # STILL WIP
-    #TODO restrict mutationrange based on type and reorder stat mutation to suit
-    #eg producers have less active stats, so need a smaller rand range
+# Create a new subspecies  
 
 def mutate_monster(EntryCounters, parentname):  #parent name is numerical
     if 10000 <parentname<49999:
         dictofthings=dictofproducer
-        child, EntryCounters =Create_Producer(EntryCounters)
+        child, EntryCounters =Create_Producer(EntryCounters, 1)
         mutation_trait_limit =4
     elif 50000 <parentname <59999:
         dictofthings=dictofherbivore
-        child, EntryCounters =Create_Herbivore(EntryCounters)
+        child, EntryCounters =Create_Herbivore(EntryCounters,1)
         mutation_trait_limit= 6
     else: 
         dictofthings=dictofcarnivore
-        child, EntryCounters =Create_Carnivore(EntryCounters)
+        child, EntryCounters =Create_Carnivore(EntryCounters,1)
         mutation_trait_limit=9
 
     #create space for child in index
@@ -901,7 +899,7 @@ def startup_data_cleanse(rawinput, defaultval):
 # Start main body
 # the first digit of the three code is a 'type' marker
 
-skill_freq = 3 # 1= certain, 5 means most have 1-2
+skill_freq = 4 # 1= certain, 5 means most have 1-2
 
 #starter info. an inline input
 incoming_light, incoming_chem, incoming_magic, incoming_detritus, Number_producers, Number_herbivores, Number_carnivores = startup_data()
@@ -933,19 +931,19 @@ CurrentNumberCarnivores = EntryCounters['Carnivore_counter']-60000
 #Create a producer, randomly proportional to amount of energy available.
 
 for i in range(CurrentNumberProducers, Number_producers,1):
-    temp, EntryCounters=Create_Producer(EntryCounters)
+    temp, EntryCounters=Create_Producer(EntryCounters,5)
     tempname=temp['name']
     dictofproducer[tempname]=temp  #adds producer to dictionary
     #print(dictofproducer)
 
 for i in range(CurrentNumberHerbivores, Number_herbivores,1):
-    temp, EntryCounters=Create_Herbivore(EntryCounters)
+    temp, EntryCounters=Create_Herbivore(EntryCounters,5)
     tempname=temp['name']
     dictofherbivore[tempname]=temp  #adds producer to dictionary
 
 
 for i in range(CurrentNumberCarnivores, Number_carnivores,1):
-    temp, EntryCounters=Create_Carnivore(EntryCounters)
+    temp, EntryCounters=Create_Carnivore(EntryCounters,5)
     tempname=temp['name']
     dictofcarnivore[tempname]=temp  #adds producer to dictionary
 
