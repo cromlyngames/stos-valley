@@ -264,14 +264,13 @@ def evaluate_carnivores(dictofcarnivore):
             if dictofcarnivore[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
                 #START checking and scoring compi
                 if dictofcarnivore[mainmonster]['compi']==first_key:
-                    #print('first key', first_key)
                     for tempmonster in dictofcarnivore:
                         if dictofcarnivore[tempmonster]['compi']==second_key:
                             temp_fitness = temp_fitness - 0.1*dictofcarnivore[tempmonster]['Species_energy'] # being pushed out
                         elif dictofcarnivore[tempmonster]['compi']==third_key:
                             temp_fitness = temp_fitness + 0.1*dictofcarnivore[tempmonster]['Species_energy'] # mainmonster's compi beats this ones
                         else: temp_fitness = temp_fitness +0.01*dictofcarnivore[tempmonster]['Species_energy'] # against null skills
-                #END checking cand scoring compi
+                #END checking and scoring compi
                 #START checking and scoring predi -carnivores eating herbivores
                 #I am using the global variable for the different producers
                 #BECUASE this function only changes carnivores, not herbivores
@@ -461,12 +460,11 @@ def evaluate_herbivores(dictofherbivore):
         if temp_fitness < 0: temp_fitness=0
         total_fitness=total_fitness+temp_fitness
         dictofherbivore[mainmonster]['fitness']=round(temp_fitness,2) #set this monster's fitness from compi
-        #print_roughly(dictofherbivore[mainmonster])
         #END looping through all three for main monster. new monster!
       
     #END checking and scoring defence against predators
     if total_fitness == 0: total_fitness=1
-    print('Herbivores Checked: total fitness', total_fitness)
+    ('Herbivores Checked: total fitness', total_fitness)
 
     for mainmonster in dictofherbivore:
         share_factor=dictofherbivore[mainmonster]['fitness']/total_fitness
@@ -477,9 +475,6 @@ def evaluate_herbivores(dictofherbivore):
         if dictofherbivore[mainmonster]['Number'] <1:
             dictofherbivore[mainmonster]['Species_energy']=0
             print(dictofherbivore[mainmonster]['name'], 'is dying out')
-
-                                                       
-    #    print_nicely(dictofcarnivore[mainmonster])
 
 ##################
 
@@ -498,10 +493,8 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
             first_key  = listofcodes[i]
             second_key = listofcodes[i+1]
             third_key  = listofcodes[i+2]
-            #print(first_key, second_key,third_key)
             if dictofproducer[mainmonster]['compi']!='--': # only needs to run loops if there is a skill to compare
                 if dictofproducer[mainmonster]['compi']==first_key: #
-                    #print('first key', first_key)
                     for tempmonster in dictofproducer:
                         if dictofproducer[tempmonster]['compi']==second_key:
                             temp_fitness = temp_fitness - 0.1*dictofproducer[tempmonster]['Species_energy'] # being pushed out
@@ -512,7 +505,6 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
                  #start checking and scoring defnd against herbivores eating them
             if dictofproducer[mainmonster]['defnd']!='--': # only needs to run loops if there is a skill to compare
                 if dictofproducer[mainmonster]['defnd']==first_key:
-                    #print('first key', first_key)
                     for tempmonster in dictofherbivore:
                         if dictofherbivore[tempmonster]['predi']==second_key:
                             temp_fitness = temp_fitness - 0.1*dictofherbivore[tempmonster]['Species_energy'] # being pushed out
@@ -526,7 +518,6 @@ def evaluate_producers(dictofproducer, total_herbivore_energy, total_carnivore_e
         if temp_fitness < 0: temp_fitness=0
         total_fitness=total_fitness+temp_fitness
         dictofproducer[mainmonster]['fitness']=round(temp_fitness,2) #set this monster's fitness from compi
-        #print_roughly(dictofproducer[mainmonster])
         #END looping through all three for main monster. new monster!
       
     #END checking and scoring defence against predators
@@ -636,7 +627,6 @@ def cull_weakest(dictoflivingthings):
     for thing in dolt2:
         if dolt2[thing]['Species_energy']<dolt2['weakest']['Species_energy']:
             dolt2['weakest'] = dolt2[thing]
-            #print('new weakest: ', dolt2['weakest']['name'])
     
     dictoflivingthings = removekey(dictoflivingthings, dolt2['weakest']['name'])
     dictoflivingthings = removekey(dictoflivingthings, 'weakest')
@@ -714,8 +704,8 @@ def mutate_monster(EntryCounters, parentname):  #parent name is numerical
             child['Prey_size']=1
         if int(child['Prey_size']) >9:
             child['Prey_size']=9
-    print(mutationindex, mutationindey)
-    print(parent)
+    #print(mutationindex, mutationindey)
+    #print(parent)
     return(child,EntryCounters) 
 
 #######################
@@ -862,15 +852,16 @@ def print_nicely(livingthingname):
 def startup_data():
     Nprod = input('Please enter the target number of producers (default 5)')
     Nprod = startup_data_cleanse(Nprod,5)
-    Nherb = input('Please enter the target number of herbivores (default 3)')
-    Nherb = startup_data_cleanse(Nherb,3)
-    Ncarn = input('Please enter the target number of carnivores (default 3)')
-    Ncarn = startup_data_cleanse(Ncarn,3)
+    Nherb = input('Please enter the target number of herbivores (default 5)')
+    Nherb = startup_data_cleanse(Nherb,5)
+    Ncarn = input('Please enter the target number of carnivores (default 2)')
+    Ncarn = startup_data_cleanse(Ncarn,2)
 
     print("now enter the energy entering the ecosystem. This effects type of producer only")
     print("You will get about 6 fox size predators per 10k energy entering the system")
-    print("Example - Enchanted Forest: Light =20000, Magic = 10000, Chem=0, Detri=200")
+    print("Example - Enchanted Forest: Light =50000, Magic = 30000, Chem=0, Detri=1000")
     print("Example - Vents and Caves: Light=0, Magic =0, Chem =10000, Detri=10000")
+    print("Default gives 3500 to all four")
     Nlight = input('light =')
     Nlight = startup_data_cleanse(Nlight,0)
     Nmagic = input('magical energy =')
@@ -879,7 +870,8 @@ def startup_data():
     Nchem  = startup_data_cleanse(Nchem,0)
     Ndetri = input('detritus energy =')
     Ndetri = startup_data_cleanse(Ndetri,0)
-
+    if (Nlight+Nmagic+Nchem+Ndetri == 0):
+        Nlight = Nmagic = Nchem = Ndetri = 35000
     return(Nlight,Nmagic,Nchem,Ndetri,
            Nprod,Nherb, Ncarn)
 
@@ -899,7 +891,7 @@ def startup_data_cleanse(rawinput, defaultval):
 # Start main body
 # the first digit of the three code is a 'type' marker
 
-skill_freq = 4 # 1= certain, 5 means most have 1-2
+skill_freq = 5 # 1= certain, 5 means most have 1-2
 
 #starter info. an inline input
 incoming_light, incoming_chem, incoming_magic, incoming_detritus, Number_producers, Number_herbivores, Number_carnivores = startup_data()
@@ -986,6 +978,7 @@ while i >0:
 
     i=Number_producers-len(dictofproducer) + Number_herbivores-len(dictofherbivore)+Number_carnivores-len(dictofcarnivore)
     k=k+1
+    if k > 250: i=-10 #breaks loop
     
 for x in range(0,3):
     #final evaluation set to produce good foodweb.
