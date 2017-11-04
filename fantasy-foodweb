@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import random
 import time
 from listofsounds import forenamelist, surnamelist  # this file should be in the same github repository. 
