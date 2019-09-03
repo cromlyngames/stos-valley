@@ -56,9 +56,10 @@ Now you need to update two functions. The one that sets the dictionary of length
 
 # Now add an evaluation function based on your dictionary and your thing.
 Examples might be:
-    RunningAwayScore = LegLength + EarSize
-    CatchingFliesScore = EyeDistance + MouthSize + ToungeSize
-    BeingAVampireScore = TeethLength - ToothtipA  #long sharp teeth
-    SurvivingHibertation = BMIratio + WaistL + Fur Length
-    CuteScore = Eyesize + DimpleSize - FrownA
+
+     RunningAwayScore = LegLength + EarSize
+     CatchingFliesScore = EyeDistance + MouthSize + ToungeSize
+     BeingAVampireScore = TeethLength - ToothtipA  #long sharp teeth
+     SurvivingHibertation = BMIratio + WaistL + Fur Length
+     CuteScore = Eyesize + DimpleSize - FrownA
 
