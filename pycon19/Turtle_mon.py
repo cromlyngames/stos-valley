@@ -14,8 +14,8 @@ POPULATION = 1 #looper
 
 def mon_maker():
     """Our very first monster"""
-    random_mon = {'eyeratio':0.4, 'eyeL':30,
-                  'mouthratio':0.4, 'mouthL':30,
+    random_mon = {'eyeratio':0.2, 'eyeL':30,
+                  'mouthratio':0.8, 'mouthL':30,
                   'headL':40, 'headA':15,
                   'cheekL':25, 'cheekA':45,
                   'chinL': 30, 'chinA':90
@@ -86,7 +86,7 @@ def mutate_monster(generikmon):
 
 def evaulate_monster(generikmon):
     """what are you trying to evolve your monster for?"""
-    score = 100-(1-generikmon['eyeratio']+generikmon['mouthratio'])**2
+    score = generikmon['headA']
     #score = generikmon['chinA']
     return score
 
