@@ -45,7 +45,9 @@ why does this code not run? Hints: whitespace/indentation matters in python, and
 As well as the 'finished' there should also be a little popup window 
 
 # Five Minutes later:
-got to here https://github.com/cromlyngames/stos-valley/new/master/pycon19
+got to here https://github.com/cromlyngames/stos-valley/blob/master/pycon19/Turtle_mon.py 
+ 
+
 and download and open or copy and past the Turtle_mon.py program into spyder and play it. What does it do?
 
 Can you draw on paper the high level flowchart of the program? What functions get called in what order? 
