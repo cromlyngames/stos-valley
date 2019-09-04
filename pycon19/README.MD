@@ -5,7 +5,7 @@ What this workshop is about:
 3) it is not a treatise on using evoltionary techniques on engineering structual problems (Pete Debney has already written that)
 https://www.istructe.org/journal/volumes/volume-94-(2016)/issue-3/an-introduction-to-engineering-optimisation-method/
 
-# Principals: 
+# Principles: 
 Like baking, or painting, coding is a craft. Anyone can do it, and practice makes you better
 
 Documentation is like lunch. Even a small bit in a rush is much much better then skipping it
