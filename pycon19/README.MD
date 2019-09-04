@@ -44,6 +44,29 @@ Type the below into the main window (on the left). Then click the Green play but
 why does this code not run? Hints: whitespace/indentation matters in python, and I'm dyslexic
 As well as the 'finished' there should also be a little popup window 
 
+# five min later
+
+Everyone clear on what functions are? let's make one
+    
+    import turtle
+
+    def my_function(a_number):
+        turtle.forward(a_number)
+        turtle.right(a_number)
+        return
+    #for things use mutliple lines, the indentation white space is how python keeps track
+   
+    # main program
+    a_number = 7
+    #call the function a couple of times, say fifty.
+    for i in range (1,50):
+        my_function(a_number)
+    another_number =137
+    for i in range (1,50):
+        my_function(another_number)
+    
+    
+
 # Five Minutes later:
 got to here https://github.com/cromlyngames/stos-valley/blob/master/pycon19/Turtle_mon.py 
  
