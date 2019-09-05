@@ -71,7 +71,7 @@ Everyone clear on what functions are? let's make one
 got to here https://github.com/cromlyngames/stos-valley/blob/master/pycon19/Turtle_mon.py 
  
 
-and download and open or copy and past the Turtle_mon.py program into spyder and play it. What does it do?
+and click the RAW button on the top right of the code window. You should be able to copy and paste that the Turtle_mon.py program into spyder and play it. What does it do?
 
 Can you draw on paper the high level flowchart of the program? What functions get called in what order? 
 What does commeting/uncommenting (using #) on line 99 do?
